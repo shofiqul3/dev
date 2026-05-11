@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Repository Folders</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            outline: none;
+            transition: box-shadow 0.3s ease;
+        }
+
+        #search-input:focus {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+
+        li {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #667eea;
+        }
+
+        .folder-icon {
+            font-size: 24px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #loading, #error {
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .no-results {
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            grid-column: 1 / -1;
+        }
+
+        .stats {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            ul {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📁 Document Folders</h1>
+        
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="search-input" 
+                placeholder="Search folders......"
+                autocomplete="off"
+            >
+        </div>
+        
+        <div class="stats" id="stats"></div>
+        <div id="loading">⏳ Loading folders...</div>
+        <div id="error" class="hidden"></div>
+        <ul id="folder-list" class="hidden"></ul>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const username = 'shofiqul3';
+        const repo = 'dev';
+        const excludedFolders = ['.github', '.git', 'css', 'images'];
+        
+        // Optional: Custom folder names/descriptions
+        const folderDescriptions = {
+            // 'folder-name': 'Description of this folder'
+        };
+        // --- End Configuration ---
+
+        const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents/`;
+        let allFolders = [];
+
+        async function fetchFolders() {
+            const folderList = document.getElementById('folder-list');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const stats = document.getElementById('stats');
+            const searchInput = document.getElementById('search-input');
+
+            try {
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!Array.isArray(data)) {
+                    throw new Error('Invalid data format received');
+                }
+
+                // Filter folders
+                allFolders = data.filter(item => 
+                    item.type === 'dir' && !excludedFolders.includes(item.name)
+                );
+
+                // Sort folders alphabetically
+                allFolders.sort((a, b) => a.name.localeCompare(b.name));
+
+                // Update stats
+                stats.textContent = `Found ${allFolders.length} project folder${allFolders.length !== 1 ? 's' : ''}`;
+
+                // Hide loading, show list
+                loading.classList.add('hidden');
+                folderList.classList.remove('hidden');
+                
+                // Initial render
+                renderFolders(allFolders);
+
+                // Add search functionality
+                searchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase().trim();
+                    const filteredFolders = allFolders.filter(folder => 
+                        folder.name.toLowerCase().includes(searchTerm) ||
+                        (folderDescriptions[folder.name] && 
+                         folderDescriptions[folder.name].toLowerCase().includes(searchTerm))
+                    );
+                    renderFolders(filteredFolders);
+                });
+
+            } catch (err) {
+                console.error('Error fetching folders:', err);
+                loading.classList.add('hidden');
+                error.classList.remove('hidden');
+                error.innerHTML = `
+                    ❌ Failed to load folders<br>
+                    <small style="opacity: 0.8;">${err.message}</small><br>
+                    <small>Please check your internet connection and repository settings.</small>
+                `;
+            }
+        }
+
+        function renderFolders(folders) {
+            const folderList = document.getElementById('folder-list');
+            folderList.innerHTML = '';
+
+            if (folders.length === 0) {
+                folderList.innerHTML = '<div class="no-results">🔍 No folders found matching your search</div>';
+                return;
+            }
+
+            folders.forEach(item => {
+                const li = document.createElement('li');
+                const folderPath = `https://${username}.github.io/${repo}/${item.name}/`;
+                const description = folderDescriptions[item.name] || '';
+                
+                li.innerHTML = `
+                    <a href="${folderPath}" target="_blank" rel="noopener noreferrer">
+                        <span class="folder-icon">📂</span>
+                        <div>
+                            <div style="font-weight: 600;">${item.name}</div>
+                            ${description ? `<small style="opacity: 0.7; font-weight: normal;">${description}</small>` : ''}
+                        </div>
+                    </a>
+                `;
+                folderList.appendChild(li);
+            });
+        }
+
+        // Start fetching when page loads
+        fetchFolders();
+    </script>
+</body>
+  </html>
