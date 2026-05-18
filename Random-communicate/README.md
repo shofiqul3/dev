@@ -7,7 +7,7 @@ A fully **Peer-to-Peer (P2P)** chat application that runs directly in the browse
 
 ## 🌐 Live Demo
 
-[https://idcalling.github.io](https://idcalling.github.io)
+[https://shofiqul3.github.io/dev/Random-communicate/](https://shofiqul3.github.io/dev/Random-communicate/)
 
 ## ✨ Features
 
