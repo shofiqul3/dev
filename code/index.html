@@ -5,219 +5,481 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TOTP Authenticator</title>
 <style>
-  /* ── REPLACE THIS ── */
-  /* SUPABASE_FUNCTION_URL = তোমার Supabase Edge Function URL */
-  /* উদাহরণ: https://xxxx.supabase.co/functions/v1/totp-bot */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
 
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+:root {
+  --bg:      #0a0f1e;
+  --surface: #111827;
+  --card:    #1a2235;
+  --border:  #1e2d45;
+  --accent:  #3b82f6;
+  --accent2: #06b6d4;
+  --text:    #e2e8f0;
+  --muted:   #64748b;
+  --danger:  #ef4444;
+  --success: #22c55e;
+  --warn:    #f59e0b;
+  --radius:  14px;
+}
 
-  :root {
-    --bg:       #0a0f1e;
-    --surface:  #111827;
-    --card:     #1a2235;
-    --border:   #1e2d45;
-    --accent:   #3b82f6;
-    --accent2:  #06b6d4;
-    --text:     #e2e8f0;
-    --muted:    #64748b;
-    --danger:   #ef4444;
-    --success:  #22c55e;
-    --radius:   14px;
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+/* ── AUTH PAGES ── */
+.auth-wrap {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
+  background: radial-gradient(ellipse at 60% 20%, #1e3a5f33 0%, transparent 60%),
+              radial-gradient(ellipse at 20% 80%, #06b6d422 0%, transparent 50%);
+}
+.auth-box {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+  padding: 40px 36px; width: 100%; max-width: 420px; box-shadow: 0 24px 64px #00000060;
+}
+.auth-logo { text-align: center; margin-bottom: 28px; }
+.auth-logo .icon { font-size: 48px; display: block; margin-bottom: 10px; filter: drop-shadow(0 0 16px #3b82f660); }
+.auth-logo h1 { font-size: 22px; font-weight: 700; }
+.auth-logo p  { font-size: 13px; color: var(--muted); margin-top: 5px; }
 
-  /* ── LOGIN ── */
-  .login-wrap {
-    min-height: 100vh;
-    display: flex; align-items: center; justify-content: center;
-    padding: 24px;
-    background: radial-gradient(ellipse at 60% 20%, #1e3a5f33 0%, transparent 60%),
-                radial-gradient(ellipse at 20% 80%, #06b6d422 0%, transparent 50%);
-  }
-  .login-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 40px 36px;
-    width: 100%; max-width: 400px;
-    box-shadow: 0 24px 64px #00000060;
-  }
-  .login-logo {
-    text-align: center; margin-bottom: 32px;
-  }
-  .login-logo .icon {
-    font-size: 48px; display: block; margin-bottom: 12px;
-    filter: drop-shadow(0 0 16px #3b82f660);
-  }
-  .login-logo h1 { font-size: 22px; font-weight: 700; }
-  .login-logo p  { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.auth-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+.auth-tab {
+  flex: 1; padding: 10px; text-align: center; font-size: 14px; font-weight: 500;
+  color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.auth-tab.active { color: var(--accent); border-color: var(--accent); }
 
-  .field { margin-bottom: 18px; }
-  .field label { display: block; font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 8px; }
-  .field input {
-    width: 100%; padding: 12px 16px;
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 10px; color: var(--text); font-size: 14px;
-    outline: none; transition: border-color .2s;
-  }
-  .field input:focus { border-color: var(--accent); }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 7px; }
+.field input {
+  width: 100%; padding: 12px 16px; background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text); font-size: 14px; outline: none; transition: border-color .2s;
+}
+.field input:focus { border-color: var(--accent); }
 
-  .btn {
-    width: 100%; padding: 13px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border: none; border-radius: 10px; color: #fff;
-    font-size: 15px; font-weight: 600; cursor: pointer;
-    transition: opacity .2s, transform .1s;
-  }
-  .btn:hover   { opacity: .9; }
-  .btn:active  { transform: scale(.98); }
-  .btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn {
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none; border-radius: 10px; color: #fff; font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: opacity .2s, transform .1s;
+}
+.btn:hover { opacity: .9; }
+.btn:active { transform: scale(.98); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-sm {
+  padding: 8px 16px; font-size: 13px; font-weight: 500; border: none; border-radius: 8px;
+  cursor: pointer; transition: opacity .2s;
+}
+.btn-outline {
+  background: transparent; border: 1px solid var(--border); color: var(--muted);
+  padding: 8px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all .2s;
+}
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { opacity: .85; }
+.btn-success { background: var(--success); color: #fff; }
 
-  .err-msg { margin-top: 14px; color: var(--danger); font-size: 13px; text-align: center; }
-  .bot-link { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
-  .bot-link a { color: var(--accent); text-decoration: none; }
+.err-msg { margin-top: 12px; color: var(--danger); font-size: 13px; text-align: center; min-height: 18px; }
+.ok-msg  { margin-top: 12px; color: var(--success); font-size: 13px; text-align: center; min-height: 18px; }
+.link-btn { background: none; border: none; color: var(--accent); font-size: 13px; cursor: pointer; text-decoration: underline; }
 
-  /* ── DASHBOARD ── */
-  .dashboard { display: none; }
-  .topbar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; z-index: 10;
-  }
-  .topbar-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; }
-  .topbar-brand span { font-size: 22px; }
-  .topbar-actions { display: flex; align-items: center; gap: 12px; }
-  .logout-btn {
-    background: transparent; border: 1px solid var(--border);
-    color: var(--muted); padding: 7px 14px; border-radius: 8px;
-    font-size: 13px; cursor: pointer; transition: border-color .2s, color .2s;
-  }
-  .logout-btn:hover { border-color: var(--danger); color: var(--danger); }
-  .refresh-btn {
-    background: var(--card); border: 1px solid var(--border);
-    color: var(--text); padding: 7px 14px; border-radius: 8px;
-    font-size: 13px; cursor: pointer; transition: background .2s;
-  }
-  .refresh-btn:hover { background: var(--border); }
+/* ── DASHBOARD ── */
+.dashboard { display: none; }
+.topbar {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 14px 24px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 10;
+}
+.topbar-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; }
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
 
-  .main { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
-  .section-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 16px; }
+.nav-tabs {
+  display: flex; gap: 4px; background: var(--card); padding: 4px; border-radius: 10px;
+}
+.nav-tab {
+  padding: 7px 14px; border-radius: 7px; font-size: 13px; font-weight: 500;
+  color: var(--muted); cursor: pointer; transition: all .2s; border: none; background: none;
+}
+.nav-tab.active { background: var(--accent); color: #fff; }
 
-  .code-grid { display: grid; gap: 14px; }
-  .code-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 20px 22px;
-    position: relative; overflow: hidden;
-    transition: border-color .2s, box-shadow .2s;
-  }
-  .code-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 20px #00000030; }
-  .code-card::before {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: linear-gradient(180deg, var(--accent), var(--accent2));
-  }
-  .code-label { font-size: 13px; color: var(--muted); font-weight: 500; margin-bottom: 8px; }
-  .code-otp {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 36px; font-weight: 700; letter-spacing: 6px;
-    color: var(--text); cursor: pointer; user-select: none;
-    transition: color .15s;
-  }
-  .code-otp:hover { color: var(--accent); }
-  .code-otp.copied { color: var(--success); }
-  .code-meta {
-    display: flex; align-items: center; gap: 10px;
-    margin-top: 12px;
-  }
-  .timer-bar-wrap {
-    flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
-  }
-  .timer-bar {
-    height: 100%; border-radius: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    transition: width 1s linear;
-  }
-  .timer-bar.warn { background: #f59e0b; }
-  .timer-bar.crit { background: var(--danger); }
-  .timer-txt { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; min-width: 28px; text-align: right; }
+.main { max-width: 680px; margin: 0 auto; padding: 28px 20px; }
+.page { display: none; }
+.page.active { display: block; }
 
-  .empty-state {
-    text-align: center; padding: 60px 20px; color: var(--muted);
-  }
-  .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
-  .empty-state p { font-size: 14px; }
+/* ── CODES ── */
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.section-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
 
-  .loading {
-    display: flex; align-items: center; justify-content: center;
-    padding: 60px; gap: 10px; color: var(--muted);
-  }
-  .spinner {
-    width: 20px; height: 20px; border: 2px solid var(--border);
-    border-top-color: var(--accent); border-radius: 50%;
-    animation: spin .7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+.code-grid { display: grid; gap: 12px; }
+.code-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px 20px; position: relative; overflow: hidden; transition: border-color .2s, box-shadow .2s;
+}
+.code-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 20px #00000030; }
+.code-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: linear-gradient(180deg, var(--accent), var(--accent2));
+}
+.code-card.tg-card::before { background: linear-gradient(180deg, #7c3aed, #a78bfa); }
 
-  .toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: var(--success); color: #fff; padding: 10px 20px;
-    border-radius: 8px; font-size: 13px; opacity: 0;
-    transition: opacity .3s, transform .3s; pointer-events: none; z-index: 99;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.code-card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+.code-label { font-size: 12px; color: var(--muted); font-weight: 500; margin-bottom: 6px; }
+.code-badge {
+  font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px;
+  background: #1e2d45; color: var(--muted);
+}
+.code-badge.tg { background: #2d1f5e; color: #a78bfa; }
+.code-otp {
+  font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 700;
+  letter-spacing: 6px; color: var(--text); cursor: pointer; user-select: none; transition: color .15s;
+}
+.code-otp:hover { color: var(--accent); }
+.code-otp.copied { color: var(--success); }
+.code-meta { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.timer-bar-wrap { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.timer-bar { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 1s linear; }
+.timer-bar.warn { background: var(--warn); }
+.timer-bar.crit { background: var(--danger); }
+.timer-txt { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; min-width: 28px; text-align: right; }
+.code-actions { display: flex; gap: 6px; margin-top: 10px; }
 
-  @media (max-width: 480px) {
-    .login-box { padding: 28px 20px; }
-    .code-otp { font-size: 28px; letter-spacing: 4px; }
-    .topbar { padding: 12px 16px; }
-    .main { padding: 20px 14px; }
-  }
+/* ── ADD CODE PANEL ── */
+.panel {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+}
+.panel h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+
+/* ── TRASH ── */
+.trash-card {
+  background: var(--card); border: 1px solid #2d1a1a; border-radius: 10px; padding: 14px 18px;
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+}
+.trash-info { flex: 1; }
+.trash-label { font-size: 14px; font-weight: 500; }
+.trash-expires { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.trash-expires.soon { color: var(--warn); }
+.trash-actions { display: flex; gap: 8px; }
+
+/* ── SETTINGS ── */
+.settings-section { margin-bottom: 28px; }
+.settings-section h3 { font-size: 14px; font-weight: 600; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.settings-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #111827; }
+.settings-label { font-size: 14px; }
+.settings-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.connected-badge { display: inline-flex; align-items: center; gap: 5px; background: #0f2d1a; border: 1px solid #166534; color: var(--success); padding: 4px 10px; border-radius: 20px; font-size: 12px; }
+
+/* ── ADMIN ── */
+.admin-login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.admin-panel { display: none; }
+.admin-topbar {
+  background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10;
+}
+.admin-main { max-width: 960px; margin: 0 auto; padding: 28px 20px; }
+.admin-nav-tabs { display: flex; gap: 4px; background: var(--card); padding: 4px; border-radius: 10px; width: fit-content; margin-bottom: 24px; }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; padding: 10px 14px; color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+td { padding: 12px 14px; border-bottom: 1px solid #0d1626; vertical-align: middle; }
+tr:hover td { background: #0d1626; }
+
+.badge {
+  display: inline-block; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600;
+}
+.badge-green { background: #0f2d1a; color: var(--success); }
+.badge-red   { background: #2d1a1a; color: var(--danger); }
+.badge-gray  { background: #1a2235; color: var(--muted); }
+
+/* ── MISC ── */
+.empty-state { text-align: center; padding: 50px 20px; color: var(--muted); }
+.empty-state .icon { font-size: 42px; margin-bottom: 14px; }
+.empty-state p { font-size: 14px; }
+.loading { display: flex; align-items: center; justify-content: center; padding: 50px; gap: 10px; color: var(--muted); }
+.spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 10px 20px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity .3s, transform .3s; pointer-events: none; z-index: 99; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── MODAL ── */
+.modal-bg { display: none; position: fixed; inset: 0; background: #00000080; z-index: 50; align-items: center; justify-content: center; padding: 20px; }
+.modal-bg.open { display: flex; }
+.modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 100%; max-width: 400px; }
+.modal h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+
+@media (max-width: 480px) {
+  .auth-box { padding: 28px 18px; }
+  .code-otp { font-size: 26px; letter-spacing: 4px; }
+  .topbar { padding: 12px 14px; }
+  .main { padding: 18px 12px; }
+  .nav-tab { padding: 6px 10px; font-size: 12px; }
+}
 </style>
 </head>
 <body>
 
-<!-- ── LOGIN ── -->
-<div class="login-wrap" id="loginPage">
-  <div class="login-box">
-    <div class="login-logo">
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- AUTH                                                    -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="authPage" class="auth-wrap">
+  <div class="auth-box">
+    <div class="auth-logo">
       <span class="icon">🔐</span>
       <h1>TOTP Authenticator</h1>
-      <p>Email দিয়ে লগিন করুন</p>
+      <p id="authSubtitle">আপনার একাউন্টে লগিন করুন</p>
     </div>
-    <div class="field">
-      <label>Email</label>
-      <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+    <div class="auth-tabs">
+      <div class="auth-tab active" onclick="switchAuthTab('login')">লগিন</div>
+      <div class="auth-tab" onclick="switchAuthTab('register')">রেজিস্ট্রেশন</div>
+      <div class="auth-tab" onclick="switchAuthTab('forgot')">পাসওয়ার্ড ভুলেছেন</div>
     </div>
-    <div class="field">
-      <label>Password</label>
-      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+
+    <!-- Login -->
+    <div id="loginForm">
+      <div class="field"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="field"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"></div>
+      <button class="btn" id="loginBtn" onclick="doLogin()">লগিন করুন</button>
+      <div class="err-msg" id="loginErr"></div>
+      <div style="text-align:center;margin-top:16px;">
+        <button class="link-btn" onclick="switchAuthTab('forgot')">পাসওয়ার্ড ভুলে গেছেন?</button>
+      </div>
+      <div style="text-align:center;margin-top:8px;font-size:13px;color:var(--muted);">
+        একাউন্ট নেই? <button class="link-btn" onclick="switchAuthTab('register')">রেজিস্ট্রেশন করুন</button>
+      </div>
+      <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--muted);">
+        <button class="link-btn" style="font-size:12px;" onclick="showAdminLogin()">Admin Login →</button>
+      </div>
     </div>
-    <button class="btn" id="loginBtn" onclick="doLogin()">লগিন করুন</button>
-    <div class="err-msg" id="loginErr"></div>
-    <div class="bot-link">
-      একাউন্ট নেই? <a href="https://t.me/YOUR_BOT_USERNAME" target="_blank">Telegram Bot থেকে রেজিস্টার করুন</a>
+
+    <!-- Register -->
+    <div id="registerForm" style="display:none;">
+      <div id="regStep1">
+        <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
+        <button class="btn" id="regEmailBtn" onclick="sendRegOtp()">OTP পাঠান</button>
+        <div class="err-msg" id="regErr"></div>
+        <div class="ok-msg" id="regOk"></div>
+      </div>
+      <div id="regStep2" style="display:none;">
+        <div class="field"><label>Email OTP</label><input type="text" id="regOtp" placeholder="6 সংখ্যার কোড" maxlength="6" inputmode="numeric"></div>
+        <div class="field"><label>Password (কমপক্ষে ৮ অক্ষর)</label><input type="password" id="regPassword" placeholder="••••••••"></div>
+        <div class="field"><label>Password নিশ্চিত করুন</label><input type="password" id="regPassword2" placeholder="••••••••"></div>
+        <button class="btn" id="regSubmitBtn" onclick="doRegister()">একাউন্ট তৈরি করুন</button>
+        <div class="err-msg" id="regErr2"></div>
+        <div class="ok-msg" id="regOk2"></div>
+      </div>
+    </div>
+
+    <!-- Forgot Password -->
+    <div id="forgotForm" style="display:none;">
+      <div id="forgotStep1">
+        <div class="field"><label>Email</label><input type="email" id="forgotEmail" placeholder="you@example.com"></div>
+        <button class="btn" id="forgotEmailBtn" onclick="sendForgotOtp()">OTP পাঠান</button>
+        <div class="err-msg" id="forgotErr"></div>
+        <div class="ok-msg" id="forgotOk"></div>
+      </div>
+      <div id="forgotStep2" style="display:none;">
+        <div class="field"><label>Email OTP</label><input type="text" id="forgotOtp" placeholder="6 সংখ্যার কোড" maxlength="6" inputmode="numeric"></div>
+        <div class="field"><label>নতুন Password</label><input type="password" id="forgotNewPass" placeholder="••••••••"></div>
+        <button class="btn" id="forgotSubmitBtn" onclick="doResetPassword()">পাসওয়ার্ড পরিবর্তন করুন</button>
+        <div class="err-msg" id="forgotErr2"></div>
+        <div class="ok-msg" id="forgotOk2"></div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ── DASHBOARD ── -->
-<div class="dashboard" id="dashboard">
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- DASHBOARD                                               -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="dashboard" class="dashboard">
   <div class="topbar">
     <div class="topbar-brand"><span>🔐</span> TOTP</div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchPage('codes')">🔑 কোড</button>
+      <button class="nav-tab" onclick="switchPage('trash')">🗑️ ট্র্যাশ</button>
+      <button class="nav-tab" onclick="switchPage('settings')">⚙️ সেটিংস</button>
+    </div>
     <div class="topbar-actions">
-      <button class="refresh-btn" onclick="loadCodes()">🔄 Refresh</button>
-      <button class="logout-btn" onclick="logout()">Logout</button>
+      <button class="btn-outline" onclick="doLogout()">Logout</button>
     </div>
   </div>
   <div class="main">
-    <div class="section-title">আপনার Authenticator কোডসমূহ</div>
-    <div class="code-grid" id="codeGrid">
-      <div class="loading"><div class="spinner"></div> লোড হচ্ছে...</div>
+
+    <!-- Codes Page -->
+    <div id="codesPage" class="page active">
+      <!-- Add Code Panel -->
+      <div class="panel" id="addPanel" style="display:none;">
+        <h3>➕ নতুন কোড যোগ করুন</h3>
+        <div class="field"><label>নাম (Label)</label><input type="text" id="addLabel" placeholder="Gmail, Facebook, GitHub..."></div>
+        <div class="field"><label>Base32 Secret Key</label><input type="text" id="addSecret" placeholder="JBSWY3DPEHPK3PXP"></div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn" style="flex:1" onclick="doAddCode()">সেভ করুন</button>
+          <button class="btn-outline" onclick="toggleAddPanel()">বাতিল</button>
+        </div>
+        <div class="err-msg" id="addErr"></div>
+      </div>
+
+      <div class="section-header">
+        <div>
+          <div class="section-title">আপনার কোডসমূহ</div>
+          <div id="tgLinkedNote" style="display:none;font-size:12px;color:#a78bfa;margin-top:4px;">🔗 Telegram কানেক্টেড</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-outline" onclick="loadCodes()">🔄</button>
+          <button class="btn-outline" style="border-color:var(--accent);color:var(--accent);" onclick="toggleAddPanel()">➕ যোগ করুন</button>
+        </div>
+      </div>
+      <div class="code-grid" id="codeGrid">
+        <div class="loading"><div class="spinner"></div> লোড হচ্ছে...</div>
+      </div>
     </div>
+
+    <!-- Trash Page -->
+    <div id="trashPage" class="page">
+      <div class="section-header">
+        <div class="section-title">ট্র্যাশ (৩০ দিনে স্থায়ীভাবে ডিলিট)</div>
+        <button class="btn-outline" onclick="loadTrash()">🔄</button>
+      </div>
+      <div id="trashList"><div class="loading"><div class="spinner"></div> লোড হচ্ছে...</div></div>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="settingsPage" class="page">
+      <!-- Account -->
+      <div class="settings-section">
+        <h3>👤 একাউন্ট</h3>
+        <div class="settings-row">
+          <div><div class="settings-label">Email</div><div class="settings-sub" id="settingsEmail">—</div></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">পাসওয়ার্ড পরিবর্তন</div></div>
+          <button class="btn-outline" onclick="openChangePassModal()">পরিবর্তন করুন</button>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label" style="color:var(--danger);">একাউন্ট ডিলিট করুন</div><div class="settings-sub">সকল ডেটা মুছে যাবে</div></div>
+          <button class="btn-sm btn-danger" onclick="openDeleteAccountModal()">ডিলিট করুন</button>
+        </div>
+      </div>
+
+      <!-- Telegram Link -->
+      <div class="settings-section">
+        <h3>🔗 Telegram কানেক্ট</h3>
+        <div id="tgLinkStatus">
+          <div class="settings-row">
+            <div><div class="settings-label">Telegram একাউন্ট</div><div class="settings-sub">কানেক্ট করলে ওয়েবসাইটে Telegram কোডও দেখা যাবে</div></div>
+            <div id="tgLinkBtn">
+              <button class="btn-outline" onclick="openLinkTgModal()">কানেক্ট করুন</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- ADMIN                                                   -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="adminLoginPage" style="display:none;" class="admin-login-wrap">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <span class="icon">🛡️</span>
+      <h1>Admin Panel</h1>
+      <p>অ্যাডমিন লগিন</p>
+    </div>
+    <div class="field"><label>Username</label><input type="text" id="adminUser" autocomplete="off"></div>
+    <div class="field"><label>Password</label><input type="password" id="adminPass"></div>
+    <button class="btn" onclick="doAdminLogin()">লগিন</button>
+    <div class="err-msg" id="adminErr"></div>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="link-btn" onclick="showUserAuth()">← ব্যবহারকারী লগিনে ফিরুন</button>
+    </div>
+  </div>
+</div>
+
+<div id="adminPanel" class="admin-panel">
+  <div class="admin-topbar">
+    <div class="topbar-brand"><span>🛡️</span> Admin Panel</div>
+    <button class="btn-outline" onclick="doAdminLogout()">Logout</button>
+  </div>
+  <div class="admin-main">
+    <div class="admin-nav-tabs">
+      <button class="nav-tab active" onclick="switchAdminTab('webUsers')">🌐 ওয়েব ইউজার</button>
+      <button class="nav-tab" onclick="switchAdminTab('tgUsers')">📱 Telegram ইউজার</button>
+      <button class="nav-tab" onclick="switchAdminTab('logs')">📋 লগ</button>
+    </div>
+    <div id="adminWebUsers" class="admin-page">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Email</th><th>Verified</th><th>Telegram</th><th>Banned</th><th>তারিখ</th><th>অ্যাকশন</th></tr></thead>
+          <tbody id="webUsersBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div id="adminTgUsers" class="admin-page" style="display:none;">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Chat ID</th><th>Username</th><th>নাম</th><th>Banned</th><th>তারিখ</th><th>অ্যাকশন</th></tr></thead>
+          <tbody id="tgUsersBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div id="adminLogs" class="admin-page" style="display:none;">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>সময়</th><th>Chat ID</th><th>অ্যাকশন</th><th>ডিটেইল</th></tr></thead>
+          <tbody id="logsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODALS                                                  -->
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- Change Password Modal -->
+<div class="modal-bg" id="changePassModal">
+  <div class="modal">
+    <h3>🔒 পাসওয়ার্ড পরিবর্তন</h3>
+    <div class="field"><label>বর্তমান পাসওয়ার্ড</label><input type="password" id="cpCurrent" placeholder="••••••••"></div>
+    <div class="field"><label>নতুন পাসওয়ার্ড</label><input type="password" id="cpNew" placeholder="••••••••"></div>
+    <div class="field"><label>নিশ্চিত করুন</label><input type="password" id="cpNew2" placeholder="••••••••"></div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button class="btn" style="flex:1" onclick="doChangePassword()">পরিবর্তন করুন</button>
+      <button class="btn-outline" onclick="closeModal('changePassModal')">বাতিল</button>
+    </div>
+    <div class="err-msg" id="cpErr"></div>
+    <div class="ok-msg" id="cpOk"></div>
+  </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal-bg" id="deleteAccountModal">
+  <div class="modal">
+    <h3 style="color:var(--danger);">⚠️ একাউন্ট ডিলিট</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">এই কাজ ফিরিয়ে আনা যাবে না। সমস্ত কোড ও ডেটা মুছে যাবে।</p>
+    <div class="field"><label>পাসওয়ার্ড দিয়ে নিশ্চিত করুন</label><input type="password" id="delAccPass" placeholder="••••••••"></div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button class="btn btn-danger" style="flex:1" onclick="doDeleteAccount()">ডিলিট করুন</button>
+      <button class="btn-outline" onclick="closeModal('deleteAccountModal')">বাতিল</button>
+    </div>
+    <div class="err-msg" id="delAccErr"></div>
+  </div>
+</div>
+
+<!-- Link Telegram Modal -->
+<div class="modal-bg" id="linkTgModal">
+  <div class="modal">
+    <h3>🔗 Telegram কানেক্ট</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">তোমার Telegram username দাও। Bot-এ একটি OTP পাঠানো হবে।</p>
+    <div class="field"><label>Telegram Username (@ছাড়া)</label><input type="text" id="tgUsername" placeholder="username" autocomplete="off"></div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button class="btn" style="flex:1" onclick="doLinkTelegram()">OTP পাঠান</button>
+      <button class="btn-outline" onclick="closeModal('linkTgModal')">বাতিল</button>
+    </div>
+    <div class="err-msg" id="linkTgErr"></div>
+    <div class="ok-msg" id="linkTgOk"></div>
   </div>
 </div>
 
@@ -225,147 +487,551 @@
 
 <script>
 // ══════════════════════════════════════════════════════
-// ⚠️ এখানে তোমার Supabase Edge Function URL দাও
 const API_BASE = "https://qhctfdhtqtttumsgyplv.supabase.co/functions/v1/quick-service";
 // ══════════════════════════════════════════════════════
 
-let sessionToken = null;
-let tickInterval = null;
-let codesData    = [];
+// ── State ──────────────────────────────────────────────
+let sessionToken  = null;
+let sessionEmail  = null;
+let adminToken    = null;
+let codesData     = [];
+let tickInterval  = null;
+let linkedTelegram = false;
 
-// ── Init ────────────────────────────────────────────
+// ── Init ───────────────────────────────────────────────
 window.onload = () => {
   const saved = sessionStorage.getItem("totp_token");
-  if (saved) { sessionToken = saved; showDashboard(); loadCodes(); }
+  const email = sessionStorage.getItem("totp_email");
+  if (saved) { sessionToken = saved; sessionEmail = email; showDashboard(); loadCodes(); loadSettings(); }
 };
 
-// ── Login ───────────────────────────────────────────
-async function doLogin() {
-  const email    = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value;
-  const btn      = document.getElementById("loginBtn");
-  const err      = document.getElementById("loginErr");
-  err.textContent = "";
-  if (!email || !password) { err.textContent = "Email ও Password দিন।"; return; }
-  btn.disabled = true; btn.textContent = "লগিন হচ্ছে...";
-  try {
-    const res  = await fetch(`${API_BASE}/api/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
-    const data = await res.json();
-    if (!res.ok) { err.textContent = data.error === "Account banned" ? "🚫 আপনার একাউন্ট নিষিদ্ধ।" : "❌ " + (data.error || "ভুল Email বা Password।"); return; }
-    sessionToken = data.token;
-    sessionStorage.setItem("totp_token", sessionToken);
-    showDashboard();
-    loadCodes();
-  } catch (_) {
-    err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।";
-  } finally {
-    btn.disabled = false; btn.textContent = "লগিন করুন";
-  }
+// ── API Helper ─────────────────────────────────────────
+async function api(endpoint, body = {}) {
+  const res = await fetch(`${API_BASE}/api/${endpoint}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  return { ok: res.ok, status: res.status, data };
 }
 
-document.addEventListener("keydown", e => {
-  if (e.key === "Enter" && document.getElementById("loginPage").style.display !== "none") doLogin();
-});
+// ── Auth Tabs ──────────────────────────────────────────
+function switchAuthTab(tab) {
+  document.querySelectorAll(".auth-tab").forEach((el, i) => {
+    el.classList.toggle("active", ["login","register","forgot"][i] === tab);
+  });
+  document.getElementById("loginForm").style.display    = tab === "login"    ? "" : "none";
+  document.getElementById("registerForm").style.display = tab === "register" ? "" : "none";
+  document.getElementById("forgotForm").style.display   = tab === "forgot"   ? "" : "none";
+  document.getElementById("authSubtitle").textContent =
+    tab === "login" ? "আপনার একাউন্টে লগিন করুন" :
+    tab === "register" ? "নতুন একাউন্ট তৈরি করুন" : "পাসওয়ার্ড রিসেট করুন";
+}
 
-// ── Show/hide pages ─────────────────────────────────
+// ── Login ──────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById("loginEmail").value.trim();
+  const pass  = document.getElementById("loginPassword").value;
+  const btn   = document.getElementById("loginBtn");
+  const err   = document.getElementById("loginErr");
+  err.textContent = "";
+  if (!email || !pass) { err.textContent = "Email ও Password দিন।"; return; }
+  btn.disabled = true; btn.textContent = "লগিন হচ্ছে...";
+  try {
+    const { ok, data } = await api("login", { email, password: pass });
+    if (!ok) { err.textContent = data.error === "Account banned" ? "🚫 আপনার একাউন্ট নিষিদ্ধ।" : "❌ " + (data.error || "ভুল Email বা Password।"); return; }
+    sessionToken = data.token; sessionEmail = data.email;
+    sessionStorage.setItem("totp_token", sessionToken);
+    sessionStorage.setItem("totp_email", sessionEmail);
+    showDashboard(); loadCodes(); loadSettings();
+  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
+  finally { btn.disabled = false; btn.textContent = "লগিন করুন"; }
+}
+
+// ── Register ───────────────────────────────────────────
+async function sendRegOtp() {
+  const email = document.getElementById("regEmail").value.trim();
+  const btn = document.getElementById("regEmailBtn");
+  const err = document.getElementById("regErr"); const ok = document.getElementById("regOk");
+  err.textContent = ""; ok.textContent = "";
+  if (!email) { err.textContent = "Email দিন।"; return; }
+  btn.disabled = true; btn.textContent = "পাঠানো হচ্ছে...";
+  try {
+    const r = await api("register", { email });
+    if (!r.ok) { err.textContent = "❌ " + (r.data.error || "সমস্যা হয়েছে।"); return; }
+    ok.textContent = `✅ ${email} তে OTP পাঠানো হয়েছে।`;
+    document.getElementById("regStep2").style.display = "";
+  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
+  finally { btn.disabled = false; btn.textContent = "OTP পাঠান"; }
+}
+
+async function doRegister() {
+  const email = document.getElementById("regEmail").value.trim();
+  const code  = document.getElementById("regOtp").value.trim();
+  const pass  = document.getElementById("regPassword").value;
+  const pass2 = document.getElementById("regPassword2").value;
+  const btn = document.getElementById("regSubmitBtn");
+  const err = document.getElementById("regErr2"); const ok = document.getElementById("regOk2");
+  err.textContent = ""; ok.textContent = "";
+  if (pass !== pass2) { err.textContent = "❌ দুটো পাসওয়ার্ড মিলছে না।"; return; }
+  if (pass.length < 8) { err.textContent = "❌ পাসওয়ার্ড কমপক্ষে ৮ অক্ষর হতে হবে।"; return; }
+  btn.disabled = true; btn.textContent = "তৈরি হচ্ছে...";
+  try {
+    const r = await api("register", { email, code, password: pass });
+    if (!r.ok) { err.textContent = "❌ " + (r.data.error || "সমস্যা হয়েছে।"); return; }
+    ok.textContent = "✅ একাউন্ট তৈরি হয়েছে! লগিন করুন।";
+    setTimeout(() => switchAuthTab("login"), 1500);
+  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
+  finally { btn.disabled = false; btn.textContent = "একাউন্ট তৈরি করুন"; }
+}
+
+// ── Forgot Password ────────────────────────────────────
+async function sendForgotOtp() {
+  const email = document.getElementById("forgotEmail").value.trim();
+  const btn = document.getElementById("forgotEmailBtn");
+  const err = document.getElementById("forgotErr"); const ok = document.getElementById("forgotOk");
+  err.textContent = ""; ok.textContent = "";
+  if (!email) { err.textContent = "Email দিন।"; return; }
+  btn.disabled = true; btn.textContent = "পাঠানো হচ্ছে...";
+  try {
+    await api("forgot-password", { email });
+    ok.textContent = `✅ যদি এই email রেজিস্টার্ড থাকে, OTP পাঠানো হয়েছে।`;
+    document.getElementById("forgotStep2").style.display = "";
+  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
+  finally { btn.disabled = false; btn.textContent = "OTP পাঠান"; }
+}
+
+async function doResetPassword() {
+  const email   = document.getElementById("forgotEmail").value.trim();
+  const code    = document.getElementById("forgotOtp").value.trim();
+  const newPass = document.getElementById("forgotNewPass").value;
+  const btn = document.getElementById("forgotSubmitBtn");
+  const err = document.getElementById("forgotErr2"); const ok = document.getElementById("forgotOk2");
+  err.textContent = ""; ok.textContent = "";
+  if (newPass.length < 8) { err.textContent = "❌ পাসওয়ার্ড কমপক্ষে ৮ অক্ষর।"; return; }
+  btn.disabled = true; btn.textContent = "পরিবর্তন হচ্ছে...";
+  try {
+    const r = await api("forgot-password", { email, code, new_password: newPass });
+    if (!r.ok) { err.textContent = "❌ " + (r.data.error || "OTP ভুল বা মেয়াদ শেষ।"); return; }
+    ok.textContent = "✅ পাসওয়ার্ড পরিবর্তন হয়েছে!";
+    setTimeout(() => switchAuthTab("login"), 1500);
+  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
+  finally { btn.disabled = false; btn.textContent = "পাসওয়ার্ড পরিবর্তন করুন"; }
+}
+
+// ── Show / Hide Pages ──────────────────────────────────
 function showDashboard() {
-  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("authPage").style.display = "none";
+  document.getElementById("adminLoginPage").style.display = "none";
+  document.getElementById("adminPanel").style.display = "none";
   document.getElementById("dashboard").style.display = "block";
 }
 
-function logout() {
+function showUserAuth() {
+  document.getElementById("adminLoginPage").style.display = "none";
+  document.getElementById("authPage").style.display = "";
+}
+
+function showAdminLogin() {
+  document.getElementById("authPage").style.display = "none";
+  document.getElementById("adminLoginPage").style.display = "";
+}
+
+function doLogout() {
+  if (sessionToken) api("logout", { token: sessionToken });
+  sessionToken = null; sessionEmail = null;
   sessionStorage.removeItem("totp_token");
-  sessionToken = null;
+  sessionStorage.removeItem("totp_email");
   clearInterval(tickInterval);
-  document.getElementById("loginPage").style.display = "";
   document.getElementById("dashboard").style.display = "none";
+  document.getElementById("authPage").style.display = "";
   document.getElementById("loginEmail").value = "";
   document.getElementById("loginPassword").value = "";
 }
 
-// ── Load codes ──────────────────────────────────────
+function switchPage(page) {
+  ["codes","trash","settings"].forEach(p => {
+    document.getElementById(p + "Page").classList.toggle("active", p === page);
+  });
+  document.querySelectorAll(".nav-tab").forEach((el, i) => {
+    el.classList.toggle("active", ["codes","trash","settings"][i] === page);
+  });
+  if (page === "trash") loadTrash();
+  if (page === "settings") loadSettings();
+}
+
+// ── Codes ──────────────────────────────────────────────
 async function loadCodes() {
   const grid = document.getElementById("codeGrid");
   grid.innerHTML = '<div class="loading"><div class="spinner"></div> লোড হচ্ছে...</div>';
   clearInterval(tickInterval);
   try {
-    const res  = await fetch(`${API_BASE}/api/codes`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: sessionToken }) });
-    if (res.status === 401) { logout(); return; }
-    if (res.status === 403) { grid.innerHTML = '<div class="empty-state"><div class="icon">🚫</div><p>আপনার একাউন্ট নিষিদ্ধ।</p></div>'; return; }
-    const data = await res.json();
-    codesData  = data.codes || [];
+    const { ok, status, data } = await api("codes", { token: sessionToken });
+    if (status === 401) { doLogout(); return; }
+    if (!ok) { grid.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>লোড করতে সমস্যা।</p></div>'; return; }
+    codesData = data.codes || [];
+    linkedTelegram = data.linked_telegram || false;
+    document.getElementById("tgLinkedNote").style.display = linkedTelegram ? "" : "none";
     renderCodes();
     startTicker();
   } catch (_) {
-    grid.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>লোড করতে সমস্যা হয়েছে।</p></div>';
+    grid.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>সার্ভারে সংযোগ হচ্ছে না।</p></div>';
   }
 }
 
-// ── Render ──────────────────────────────────────────
 function renderCodes() {
   const grid = document.getElementById("codeGrid");
   if (!codesData.length) {
-    grid.innerHTML = '<div class="empty-state"><div class="icon">🔑</div><p>কোনো কোড সেভ নেই।<br>Telegram Bot থেকে কোড যোগ করুন।</p></div>';
+    grid.innerHTML = '<div class="empty-state"><div class="icon">🔑</div><p>কোনো কোড নেই।<br>"➕ যোগ করুন" দিয়ে কোড সেভ করুন।</p></div>';
     return;
   }
   grid.innerHTML = codesData.map((c, i) => `
-    <div class="code-card">
-      <div class="code-label">${escHtml(c.label)}</div>
-      <div class="code-otp" id="otp_${i}" onclick="copyCode('${c.otp}', ${i})">${formatOTP(c.otp)}</div>
+    <div class="code-card${c.source === 'telegram' ? ' tg-card' : ''}">
+      <div class="code-card-top">
+        <div class="code-label">${escHtml(c.label)}</div>
+        <span class="code-badge${c.source === 'telegram' ? ' tg' : ''}">${c.source === 'telegram' ? '📱 Telegram' : '🌐 Web'}</span>
+      </div>
+      <div class="code-otp" id="otp_${i}" onclick="copyCode('${c.otp}', ${i})">${fmtOtp(c.otp)}</div>
       <div class="code-meta">
         <div class="timer-bar-wrap"><div class="timer-bar" id="bar_${i}"></div></div>
         <div class="timer-txt" id="timer_${i}"></div>
       </div>
+      ${c.source === 'web' ? `
+      <div class="code-actions">
+        <button class="btn-sm btn-danger" onclick="doDeleteCode('${c.id}')">🗑️ ডিলিট</button>
+      </div>` : ''}
     </div>
   `).join("");
   updateBars();
 }
 
-function formatOTP(otp) {
-  return otp.slice(0, 3) + " " + otp.slice(3);
-}
+function fmtOtp(otp) { return otp.slice(0, 3) + " " + otp.slice(3); }
 
 function updateBars() {
-  const epoch   = Math.floor(Date.now() / 1000);
+  const epoch = Math.floor(Date.now() / 1000);
   const remaining = 30 - (epoch % 30);
-  const pct     = (remaining / 30) * 100;
+  const pct = (remaining / 30) * 100;
   codesData.forEach((_, i) => {
-    const bar   = document.getElementById(`bar_${i}`);
+    const bar = document.getElementById(`bar_${i}`);
     const timerEl = document.getElementById(`timer_${i}`);
     if (!bar) return;
-    bar.style.width   = pct + "%";
-    bar.className     = "timer-bar" + (remaining <= 5 ? " crit" : remaining <= 10 ? " warn" : "");
+    bar.style.width = pct + "%";
+    bar.className = "timer-bar" + (remaining <= 5 ? " crit" : remaining <= 10 ? " warn" : "");
     if (timerEl) timerEl.textContent = remaining + "s";
   });
 }
 
 function startTicker() {
   clearInterval(tickInterval);
-  let lastEpochWindow = Math.floor(Date.now() / 30000);
+  let lastWindow = Math.floor(Date.now() / 30000);
   tickInterval = setInterval(() => {
     updateBars();
-    const nowWindow = Math.floor(Date.now() / 30000);
-    if (nowWindow !== lastEpochWindow) { lastEpochWindow = nowWindow; loadCodes(); }
+    const now = Math.floor(Date.now() / 30000);
+    if (now !== lastWindow) { lastWindow = now; loadCodes(); }
   }, 1000);
 }
 
-// ── Copy ────────────────────────────────────────────
 async function copyCode(otp, i) {
   try { await navigator.clipboard.writeText(otp); } catch (_) {}
   const el = document.getElementById(`otp_${i}`);
-  if (el) { el.classList.add("copied"); el.textContent = "✓ Copied!"; setTimeout(() => { el.classList.remove("copied"); el.textContent = formatOTP(otp); }, 1500); }
+  if (el) { el.classList.add("copied"); el.textContent = "✓ Copied!"; setTimeout(() => { el.classList.remove("copied"); el.textContent = fmtOtp(otp); }, 1500); }
   showToast("✅ কোড কপি হয়েছে");
 }
 
+// ── Add Code ───────────────────────────────────────────
+function toggleAddPanel() {
+  const p = document.getElementById("addPanel");
+  p.style.display = p.style.display === "none" ? "" : "none";
+}
+
+async function doAddCode() {
+  const label  = document.getElementById("addLabel").value.trim();
+  const secret = document.getElementById("addSecret").value.trim();
+  const err    = document.getElementById("addErr");
+  err.textContent = "";
+  if (!label || !secret) { err.textContent = "সব ঘর পূরণ করুন।"; return; }
+  try {
+    const { ok, data } = await api("codes/add", { token: sessionToken, label, secret });
+    if (!ok) { err.textContent = "❌ " + (data.error || "সেভ করতে সমস্যা।"); return; }
+    document.getElementById("addLabel").value = "";
+    document.getElementById("addSecret").value = "";
+    toggleAddPanel();
+    showToast("✅ কোড সেভ হয়েছে!");
+    loadCodes();
+  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
+}
+
+// ── Delete Code ────────────────────────────────────────
+async function doDeleteCode(id) {
+  if (!confirm("কোডটি ট্র্যাশে যাবে। ৩০ দিনের মধ্যে ফিরিয়ে আনা যাবে।")) return;
+  try {
+    const { ok } = await api("codes/delete", { token: sessionToken, id });
+    if (ok) { showToast("🗑️ ট্র্যাশে গেছে"); loadCodes(); }
+  } catch (_) { showToast("❌ সমস্যা হয়েছে"); }
+}
+
+// ── Trash ──────────────────────────────────────────────
+async function loadTrash() {
+  const list = document.getElementById("trashList");
+  list.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  try {
+    const { data } = await api("codes/trash", { token: sessionToken });
+    const items = data.trash || [];
+    if (!items.length) { list.innerHTML = '<div class="empty-state"><div class="icon">🗑️</div><p>ট্র্যাশ খালি।</p></div>'; return; }
+    list.innerHTML = items.map(item => {
+      const permDate = new Date(item.permanent_delete_at);
+      const daysLeft = Math.ceil((permDate - Date.now()) / 86400000);
+      const soon = daysLeft <= 3;
+      return `<div class="trash-card">
+        <div class="trash-info">
+          <div class="trash-label">${escHtml(item.label)}</div>
+          <div class="trash-expires${soon ? ' soon' : ''}">${soon ? '⚠️' : '🕐'} ${daysLeft} দিনে স্থায়ীভাবে ডিলিট হবে</div>
+        </div>
+        <div class="trash-actions">
+          <button class="btn-sm btn-success" onclick="doRestoreCode('${item.id}')">↩️ ফিরিয়ে আনুন</button>
+        </div>
+      </div>`;
+    }).join("");
+  } catch (_) { list.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>লোড করতে সমস্যা।</p></div>'; }
+}
+
+async function doRestoreCode(id) {
+  try {
+    const { ok } = await api("codes/restore", { token: sessionToken, id });
+    if (ok) { showToast("✅ কোড ফিরিয়ে আনা হয়েছে"); loadTrash(); }
+  } catch (_) { showToast("❌ সমস্যা হয়েছে"); }
+}
+
+// ── Settings ───────────────────────────────────────────
+async function loadSettings() {
+  document.getElementById("settingsEmail").textContent = sessionEmail || "—";
+
+  // Load Telegram link status
+  try {
+    const { data } = await api("codes", { token: sessionToken });
+    const linked = data.linked_telegram;
+    const tgBtn  = document.getElementById("tgLinkBtn");
+    if (linked) {
+      tgBtn.innerHTML = `<span class="connected-badge">✅ কানেক্টেড</span>
+        <button class="btn-sm btn-danger" style="margin-left:8px;" onclick="doDisconnectTg()">ডিসকানেক্ট</button>`;
+    } else {
+      tgBtn.innerHTML = `<button class="btn-outline" onclick="openLinkTgModal()">কানেক্ট করুন</button>`;
+    }
+  } catch (_) {}
+}
+
+// ── Change Password ────────────────────────────────────
+function openChangePassModal() {
+  document.getElementById("cpCurrent").value = "";
+  document.getElementById("cpNew").value = "";
+  document.getElementById("cpNew2").value = "";
+  document.getElementById("cpErr").textContent = "";
+  document.getElementById("cpOk").textContent = "";
+  document.getElementById("changePassModal").classList.add("open");
+}
+
+async function doChangePassword() {
+  const current = document.getElementById("cpCurrent").value;
+  const newPass = document.getElementById("cpNew").value;
+  const newPass2 = document.getElementById("cpNew2").value;
+  const err = document.getElementById("cpErr"); const ok = document.getElementById("cpOk");
+  err.textContent = ""; ok.textContent = "";
+  if (newPass !== newPass2) { err.textContent = "❌ দুটো পাসওয়ার্ড মিলছে না।"; return; }
+  if (newPass.length < 8) { err.textContent = "❌ কমপক্ষে ৮ অক্ষর।"; return; }
+  try {
+    // Use forgot-password verify approach or a dedicated change-pass endpoint
+    // Here we re-login to verify current password then update
+    const verifyRes = await api("login", { email: sessionEmail, password: current });
+    if (!verifyRes.ok) { err.textContent = "❌ বর্তমান পাসওয়ার্ড ভুল।"; return; }
+    // Now send OTP to email for password change
+    const r = await api("forgot-password", { email: sessionEmail });
+    ok.textContent = "📧 Email এ OTP পাঠানো হয়েছে। OTP দিয়ে নতুন পাসওয়ার্ড সেট করুন।";
+    err.textContent = "";
+    // Store pending new pass and show OTP field
+    window._pendingNewPass = newPass;
+    document.getElementById("changePassModal").classList.remove("open");
+    showToast("📧 Email এ OTP পাঠানো হয়েছে। Forgot Password ট্যাব থেকে সম্পন্ন করুন।");
+  } catch (_) { err.textContent = "❌ সমস্যা হয়েছে।"; }
+}
+
+// ── Delete Account ─────────────────────────────────────
+function openDeleteAccountModal() {
+  document.getElementById("delAccPass").value = "";
+  document.getElementById("delAccErr").textContent = "";
+  document.getElementById("deleteAccountModal").classList.add("open");
+}
+
+async function doDeleteAccount() {
+  const pass = document.getElementById("delAccPass").value;
+  const err  = document.getElementById("delAccErr");
+  err.textContent = "";
+  if (!pass) { err.textContent = "পাসওয়ার্ড দিন।"; return; }
+  if (!confirm("সত্যিই একাউন্ট ডিলিট করতে চান? এটি ফিরিয়ে আনা যাবে না।")) return;
+  try {
+    const { ok, data } = await api("account-delete", { token: sessionToken, password: pass });
+    if (!ok) { err.textContent = "❌ " + (data.error || "পাসওয়ার্ড ভুল।"); return; }
+    showToast("✅ একাউন্ট ডিলিট হয়েছে।");
+    setTimeout(() => doLogout(), 1000);
+  } catch (_) { err.textContent = "❌ সমস্যা হয়েছে।"; }
+}
+
+// ── Telegram Link ──────────────────────────────────────
+function openLinkTgModal() {
+  document.getElementById("tgUsername").value = "";
+  document.getElementById("linkTgErr").textContent = "";
+  document.getElementById("linkTgOk").textContent = "";
+  document.getElementById("linkTgModal").classList.add("open");
+}
+
+async function doLinkTelegram() {
+  const username = document.getElementById("tgUsername").value.trim();
+  const err = document.getElementById("linkTgErr"); const ok = document.getElementById("linkTgOk");
+  err.textContent = ""; ok.textContent = "";
+  if (!username) { err.textContent = "Username দিন।"; return; }
+  try {
+    const { ok: apiOk, data } = await api("link-telegram/link-request", { token: sessionToken, telegram_username: username });
+    if (!apiOk) { err.textContent = "❌ " + (data.error || "সমস্যা হয়েছে।"); return; }
+    ok.textContent = `✅ @${username} এর Telegram Bot এ OTP পাঠানো হয়েছে। Bot এ OTP দিন।`;
+  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
+}
+
+async function doDisconnectTg() {
+  if (!confirm("Telegram ডিসকানেক্ট করবেন? ওয়েবসাইট থেকে Telegram কোড দেখা যাবে না।")) return;
+  try {
+    const { ok } = await api("link-telegram/link-disconnect", { token: sessionToken });
+    if (ok) { showToast("🔗 Telegram ডিসকানেক্ট হয়েছে"); loadSettings(); loadCodes(); }
+  } catch (_) { showToast("❌ সমস্যা হয়েছে"); }
+}
+
+// ── Modals ─────────────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.remove("open"); }
+document.querySelectorAll(".modal-bg").forEach(bg => {
+  bg.addEventListener("click", e => { if (e.target === bg) bg.classList.remove("open"); });
+});
+
+// ── Admin ──────────────────────────────────────────────
+async function doAdminLogin() {
+  const u = document.getElementById("adminUser").value;
+  const p = document.getElementById("adminPass").value;
+  const err = document.getElementById("adminErr");
+  err.textContent = "";
+  try {
+    const { ok, data } = await api("admin/admin-login", { username: u, password: p });
+    if (!ok) { err.textContent = "❌ ভুল credentials।"; return; }
+    adminToken = data.token;
+    document.getElementById("adminLoginPage").style.display = "none";
+    document.getElementById("adminPanel").style.display = "block";
+    loadAdminWebUsers();
+  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
+}
+
+function doAdminLogout() {
+  adminToken = null;
+  document.getElementById("adminPanel").style.display = "none";
+  document.getElementById("authPage").style.display = "";
+}
+
+function switchAdminTab(tab) {
+  ["webUsers","tgUsers","logs"].forEach(t => {
+    document.getElementById("admin" + t.charAt(0).toUpperCase() + t.slice(1)).style.display = t === tab ? "" : "none";
+  });
+  document.querySelectorAll(".admin-nav-tabs .nav-tab").forEach((el, i) => {
+    el.classList.toggle("active", ["webUsers","tgUsers","logs"][i] === tab);
+  });
+  if (tab === "webUsers") loadAdminWebUsers();
+  if (tab === "tgUsers")  loadAdminTgUsers();
+  if (tab === "logs")     loadAdminLogs();
+}
+
+async function loadAdminWebUsers() {
+  const tbody = document.getElementById("webUsersBody");
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);">লোড হচ্ছে...</td></tr>';
+  const { data } = await api("admin/admin-users", { token: adminToken });
+  const users = data.users || [];
+  if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);">কোনো ইউজার নেই।</td></tr>'; return; }
+  tbody.innerHTML = users.map(u => `
+    <tr>
+      <td>${escHtml(u.email)}</td>
+      <td><span class="badge ${u.email_verified ? 'badge-green' : 'badge-gray'}">${u.email_verified ? 'Yes' : 'No'}</span></td>
+      <td>${u.linked_chat_id ? `<span class="badge badge-green">✓ ${u.linked_chat_id}</span>` : '<span class="badge badge-gray">—</span>'}</td>
+      <td><span class="badge ${u.is_banned ? 'badge-red' : 'badge-green'}">${u.is_banned ? 'Banned' : 'Active'}</span></td>
+      <td style="color:var(--muted);font-size:12px;">${new Date(u.created_at).toLocaleDateString('bn-BD')}</td>
+      <td>
+        <button class="btn-sm ${u.is_banned ? 'btn-success' : 'btn-danger'}" onclick="adminBanUser('${u.id}','web',${!u.is_banned})" style="margin-right:4px;">${u.is_banned ? 'Unban' : 'Ban'}</button>
+        <button class="btn-sm btn-danger" onclick="adminDeleteUser('${u.id}')">Delete</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+async function loadAdminTgUsers() {
+  const tbody = document.getElementById("tgUsersBody");
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);">লোড হচ্ছে...</td></tr>';
+  const { data } = await api("admin/admin-tg-users", { token: adminToken });
+  const users = data.users || [];
+  tbody.innerHTML = users.map(u => `
+    <tr>
+      <td style="font-family:monospace;">${u.chat_id}</td>
+      <td>${u.username ? '@' + escHtml(u.username) : '—'}</td>
+      <td>${escHtml((u.first_name || '') + ' ' + (u.last_name || ''))}</td>
+      <td><span class="badge ${u.is_banned ? 'badge-red' : 'badge-green'}">${u.is_banned ? 'Banned' : 'Active'}</span></td>
+      <td style="color:var(--muted);font-size:12px;">${new Date(u.created_at).toLocaleDateString('bn-BD')}</td>
+      <td>
+        <button class="btn-sm ${u.is_banned ? 'btn-success' : 'btn-danger'}" onclick="adminBanUser(${u.chat_id},'telegram',${!u.is_banned})">${u.is_banned ? 'Unban' : 'Ban'}</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+async function loadAdminLogs() {
+  const tbody = document.getElementById("logsBody");
+  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);">লোড হচ্ছে...</td></tr>';
+  const { data } = await api("admin/admin-logs", { token: adminToken });
+  const logs = data.logs || [];
+  tbody.innerHTML = logs.slice(0,100).map(l => `
+    <tr>
+      <td style="font-size:11px;color:var(--muted);">${new Date(l.created_at).toLocaleString('bn-BD')}</td>
+      <td style="font-size:12px;font-family:monospace;">${l.chat_id || '—'}</td>
+      <td><span class="badge badge-gray">${escHtml(l.action)}</span></td>
+      <td style="font-size:12px;color:var(--muted);">${escHtml(l.detail || '—')}</td>
+    </tr>
+  `).join("");
+}
+
+async function adminBanUser(id, type, ban) {
+  const reason = ban ? (prompt("Ban কারণ (ঐচ্ছিক):") || "") : "";
+  const { ok } = await api("admin/admin-ban", { token: adminToken, id, type, ban, reason });
+  if (ok) { showToast(ban ? "🚫 Ban করা হয়েছে" : "✅ Unban করা হয়েছে"); type === "web" ? loadAdminWebUsers() : loadAdminTgUsers(); }
+}
+
+async function adminDeleteUser(id) {
+  if (!confirm("এই ওয়েব একাউন্ট ডিলিট করবেন?")) return;
+  const { ok } = await api("admin/admin-delete-user", { token: adminToken, id });
+  if (ok) { showToast("✅ ডিলিট হয়েছে"); loadAdminWebUsers(); }
+}
+
+// ── Helpers ────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg; t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 2000);
+  setTimeout(() => t.classList.remove("show"), 2200);
 }
-
 function escHtml(str) {
-  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    const authPage = document.getElementById("authPage");
+    if (authPage.style.display !== "none" || !authPage.classList.contains("hidden")) {
+      const loginForm = document.getElementById("loginForm");
+      if (loginForm.style.display !== "none") doLogin();
+    }
+  }
+  if (e.key === "Escape") {
+    document.querySelectorAll(".modal-bg.open").forEach(m => m.classList.remove("open"));
+  }
+});
 </script>
 </body>
 </html>
