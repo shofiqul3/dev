@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,114 +25,131 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
 
-/* ── AUTH PAGES ── */
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── AUTH WRAPPER ── */
 .auth-wrap {
   min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
   background: radial-gradient(ellipse at 60% 20%, #1e3a5f33 0%, transparent 60%),
               radial-gradient(ellipse at 20% 80%, #06b6d422 0%, transparent 50%);
 }
 .auth-box {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
-  padding: 40px 36px; width: 100%; max-width: 420px; box-shadow: 0 24px 64px #00000060;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 40px 36px;
+  width: 100%; max-width: 420px;
+  box-shadow: 0 24px 64px #00000060;
 }
 .auth-logo { text-align: center; margin-bottom: 28px; }
-.auth-logo .icon { font-size: 48px; display: block; margin-bottom: 10px; filter: drop-shadow(0 0 16px #3b82f660); }
-.auth-logo h1 { font-size: 22px; font-weight: 700; }
+.auth-logo .icon { font-size: 44px; display: block; margin-bottom: 10px; filter: drop-shadow(0 0 16px #3b82f660); }
+.auth-logo h1 { font-size: 21px; font-weight: 700; }
 .auth-logo p  { font-size: 13px; color: var(--muted); margin-top: 5px; }
 
-.auth-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
-.auth-tab {
-  flex: 1; padding: 10px; text-align: center; font-size: 14px; font-weight: 500;
-  color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent;
-  transition: color .2s, border-color .2s;
-}
-.auth-tab.active { color: var(--accent); border-color: var(--accent); }
-
+/* ── FORM ── */
 .field { margin-bottom: 16px; }
-.field label { display: block; font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 7px; }
+.field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 7px; letter-spacing: .04em; text-transform: uppercase; }
 .field input {
-  width: 100%; padding: 12px 16px; background: var(--card); border: 1px solid var(--border);
-  border-radius: 10px; color: var(--text); font-size: 14px; outline: none; transition: border-color .2s;
+  width: 100%; padding: 11px 14px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 9px; color: var(--text); font-size: 14px;
+  outline: none; transition: border-color .2s;
 }
 .field input:focus { border-color: var(--accent); }
 
 .btn {
-  width: 100%; padding: 13px;
+  width: 100%; padding: 12px;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border: none; border-radius: 10px; color: #fff; font-size: 15px; font-weight: 600;
-  cursor: pointer; transition: opacity .2s, transform .1s;
+  border: none; border-radius: 9px; color: #fff;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: opacity .2s, transform .1s;
 }
-.btn:hover { opacity: .9; }
-.btn:active { transform: scale(.98); }
-.btn:disabled { opacity: .5; cursor: not-allowed; }
-.btn-sm {
-  padding: 8px 16px; font-size: 13px; font-weight: 500; border: none; border-radius: 8px;
-  cursor: pointer; transition: opacity .2s;
-}
+.btn:hover   { opacity: .88; }
+.btn:active  { transform: scale(.98); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
 .btn-outline {
-  background: transparent; border: 1px solid var(--border); color: var(--muted);
-  padding: 8px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all .2s;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--muted); border-radius: 9px; padding: 10px 14px;
+  font-size: 13px; cursor: pointer; transition: border-color .2s, color .2s;
+  width: 100%;
 }
-.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
-.btn-danger { background: var(--danger); color: #fff; }
-.btn-danger:hover { opacity: .85; }
-.btn-success { background: var(--success); color: #fff; }
+.btn-outline:hover { border-color: var(--accent); color: var(--text); }
+.btn-danger {
+  background: transparent; border: 1px solid var(--danger);
+  color: var(--danger); border-radius: 9px; padding: 10px 14px;
+  font-size: 13px; cursor: pointer; width: 100%;
+  transition: background .2s;
+}
+.btn-danger:hover { background: #ef444420; }
 
 .err-msg { margin-top: 12px; color: var(--danger); font-size: 13px; text-align: center; min-height: 18px; }
 .ok-msg  { margin-top: 12px; color: var(--success); font-size: 13px; text-align: center; min-height: 18px; }
-.link-btn { background: none; border: none; color: var(--accent); font-size: 13px; cursor: pointer; text-decoration: underline; }
 
-/* ── DASHBOARD ── */
-.dashboard { display: none; }
+.auth-switch { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
+.auth-switch a { color: var(--accent); text-decoration: none; cursor: pointer; }
+.auth-switch a:hover { text-decoration: underline; }
+
+/* ── TOPBAR ── */
 .topbar {
   background: var(--surface); border-bottom: 1px solid var(--border);
   padding: 14px 24px; display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 10;
+  position: sticky; top: 0; z-index: 20;
 }
-.topbar-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; }
-.topbar-actions { display: flex; align-items: center; gap: 10px; }
-
-.nav-tabs {
-  display: flex; gap: 4px; background: var(--card); padding: 4px; border-radius: 10px;
+.topbar-brand { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 15px; }
+.topbar-brand span { font-size: 20px; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.icon-btn {
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--text); padding: 7px 13px; border-radius: 8px;
+  font-size: 13px; cursor: pointer; transition: background .2s;
 }
-.nav-tab {
-  padding: 7px 14px; border-radius: 7px; font-size: 13px; font-weight: 500;
-  color: var(--muted); cursor: pointer; transition: all .2s; border: none; background: none;
+.icon-btn:hover { background: var(--border); }
+.icon-btn.danger:hover { border-color: var(--danger); color: var(--danger); background: transparent; }
+
+/* ── TABS ── */
+.tabs { display: flex; gap: 2px; background: var(--card); border-radius: 10px; padding: 4px; margin-bottom: 24px; }
+.tab {
+  flex: 1; text-align: center; padding: 9px 12px; border-radius: 7px;
+  font-size: 13px; font-weight: 500; cursor: pointer; color: var(--muted);
+  transition: background .2s, color .2s; border: none; background: transparent;
 }
-.nav-tab.active { background: var(--accent); color: #fff; }
+.tab.active { background: var(--accent); color: #fff; }
 
-.main { max-width: 680px; margin: 0 auto; padding: 28px 20px; }
-.page { display: none; }
-.page.active { display: block; }
+/* ── MAIN ── */
+.main { max-width: 660px; margin: 0 auto; padding: 28px 20px; }
+.section-title { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 14px; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.section-header .section-title { margin-bottom: 0; }
 
-/* ── CODES ── */
-.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.section-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-
+/* ── CODE CARD ── */
 .code-grid { display: grid; gap: 12px; }
 .code-card {
-  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 18px 20px; position: relative; overflow: hidden; transition: border-color .2s, box-shadow .2s;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px;
+  position: relative; overflow: hidden; transition: border-color .2s, box-shadow .2s;
 }
 .code-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 20px #00000030; }
 .code-card::before {
   content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
   background: linear-gradient(180deg, var(--accent), var(--accent2));
 }
-.code-card.tg-card::before { background: linear-gradient(180deg, #7c3aed, #a78bfa); }
-
-.code-card-top { display: flex; align-items: flex-start; justify-content: space-between; }
-.code-label { font-size: 12px; color: var(--muted); font-weight: 500; margin-bottom: 6px; }
+.code-card.tg-card::before  { background: linear-gradient(180deg, #229ed9, #64b3f4); }
+.code-card.del-card::before { background: linear-gradient(180deg, var(--danger), #f97316); }
+.code-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.code-label { font-size: 13px; color: var(--muted); font-weight: 500; }
 .code-badge {
-  font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px;
-  background: #1e2d45; color: var(--muted);
+  font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px;
+  text-transform: uppercase; letter-spacing: .05em;
 }
-.code-badge.tg { background: #2d1f5e; color: #a78bfa; }
+.badge-web { background: #3b82f620; color: var(--accent); }
+.badge-tg  { background: #229ed920; color: #64b3f4; }
+.badge-del { background: #ef444420; color: var(--danger); }
 .code-otp {
-  font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 700;
-  letter-spacing: 6px; color: var(--text); cursor: pointer; user-select: none; transition: color .15s;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 34px; font-weight: 700; letter-spacing: 6px;
+  color: var(--text); cursor: pointer; user-select: none; transition: color .15s;
 }
-.code-otp:hover { color: var(--accent); }
+.code-otp:hover  { color: var(--accent); }
 .code-otp.copied { color: var(--success); }
 .code-meta { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
 .timer-bar-wrap { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
@@ -140,569 +157,550 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 .timer-bar.warn { background: var(--warn); }
 .timer-bar.crit { background: var(--danger); }
 .timer-txt { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; min-width: 28px; text-align: right; }
-.code-actions { display: flex; gap: 6px; margin-top: 10px; }
-
-/* ── ADD CODE PANEL ── */
-.panel {
-  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+.code-actions { display: flex; gap: 8px; margin-top: 12px; }
+.code-btn {
+  flex: 1; padding: 7px 10px; border-radius: 7px; border: 1px solid var(--border);
+  background: transparent; color: var(--muted); font-size: 12px; cursor: pointer;
+  transition: border-color .2s, color .2s;
 }
-.panel h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+.code-btn:hover { border-color: var(--accent); color: var(--text); }
+.code-btn.red:hover { border-color: var(--danger); color: var(--danger); }
 
-/* ── TRASH ── */
-.trash-card {
-  background: var(--card); border: 1px solid #2d1a1a; border-radius: 10px; padding: 14px 18px;
-  display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
-}
-.trash-info { flex: 1; }
-.trash-label { font-size: 14px; font-weight: 500; }
-.trash-expires { font-size: 12px; color: var(--muted); margin-top: 3px; }
-.trash-expires.soon { color: var(--warn); }
-.trash-actions { display: flex; gap: 8px; }
+/* ── TRASH CARD ── */
+.del-info { font-size: 12px; color: var(--warn); margin-top: 6px; }
 
-/* ── SETTINGS ── */
-.settings-section { margin-bottom: 28px; }
-.settings-section h3 { font-size: 14px; font-weight: 600; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-.settings-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #111827; }
-.settings-label { font-size: 14px; }
-.settings-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.connected-badge { display: inline-flex; align-items: center; gap: 5px; background: #0f2d1a; border: 1px solid #166534; color: var(--success); padding: 4px 10px; border-radius: 20px; font-size: 12px; }
-
-/* ── ADMIN ── */
-.admin-login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
-.admin-panel { display: none; }
-.admin-topbar {
-  background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px;
-  display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10;
-}
-.admin-main { max-width: 960px; margin: 0 auto; padding: 28px 20px; }
-.admin-nav-tabs { display: flex; gap: 4px; background: var(--card); padding: 4px; border-radius: 10px; width: fit-content; margin-bottom: 24px; }
-
-.table-wrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-th { text-align: left; padding: 10px 14px; color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-td { padding: 12px 14px; border-bottom: 1px solid #0d1626; vertical-align: middle; }
-tr:hover td { background: #0d1626; }
-
-.badge {
-  display: inline-block; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600;
-}
-.badge-green { background: #0f2d1a; color: var(--success); }
-.badge-red   { background: #2d1a1a; color: var(--danger); }
-.badge-gray  { background: #1a2235; color: var(--muted); }
-
-/* ── MISC ── */
-.empty-state { text-align: center; padding: 50px 20px; color: var(--muted); }
-.empty-state .icon { font-size: 42px; margin-bottom: 14px; }
+/* ── EMPTY STATE ── */
+.empty-state { text-align: center; padding: 56px 20px; color: var(--muted); }
+.empty-state .icon { font-size: 44px; margin-bottom: 14px; }
 .empty-state p { font-size: 14px; }
-.loading { display: flex; align-items: center; justify-content: center; padding: 50px; gap: 10px; color: var(--muted); }
+
+/* ── LOADING ── */
+.loading { display: flex; align-items: center; justify-content: center; padding: 56px; gap: 10px; color: var(--muted); }
 .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 10px 20px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity .3s, transform .3s; pointer-events: none; z-index: 99; }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 /* ── MODAL ── */
-.modal-bg { display: none; position: fixed; inset: 0; background: #00000080; z-index: 50; align-items: center; justify-content: center; padding: 20px; }
-.modal-bg.open { display: flex; }
-.modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 100%; max-width: 400px; }
-.modal h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+.modal-overlay {
+  position: fixed; inset: 0; background: #00000080; z-index: 100;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px; width: 100%; max-width: 400px;
+  box-shadow: 0 24px 64px #00000080;
+  transform: translateY(12px); transition: transform .2s;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal h2 { font-size: 17px; font-weight: 700; margin-bottom: 18px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+.modal-actions .btn { flex: 1; }
+
+/* ── PROFILE SECTION ── */
+.profile-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px 22px; margin-bottom: 14px;
+}
+.profile-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 14px; color: var(--muted); text-transform: uppercase; font-size: 12px; letter-spacing: .04em; }
+.info-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.info-row:last-child { border-bottom: none; }
+.info-label { color: var(--muted); }
+.info-val   { font-weight: 500; }
+.linked-badge { display: inline-flex; align-items: center; gap: 5px; background: #22c55e20; color: var(--success); padding: 3px 9px; border-radius: 20px; font-size: 12px; }
+.unlinked-badge { display: inline-flex; align-items: center; gap: 5px; background: #ef444420; color: var(--danger); padding: 3px 9px; border-radius: 20px; font-size: 12px; }
+
+/* ── ADMIN TABLE ── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th { text-align: left; padding: 10px 12px; color: var(--muted); border-bottom: 1px solid var(--border); font-weight: 500; font-size: 12px; text-transform: uppercase; }
+.data-table td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #ffffff05; }
+.table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; overflow-x: auto; }
+.status-badge { padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.status-active { background: #22c55e20; color: var(--success); }
+.status-banned { background: #ef444420; color: var(--danger); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--success); color: #fff; padding: 10px 20px;
+  border-radius: 8px; font-size: 13px; opacity: 0;
+  transition: opacity .3s, transform .3s; pointer-events: none; z-index: 999;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 @media (max-width: 480px) {
   .auth-box { padding: 28px 18px; }
-  .code-otp { font-size: 26px; letter-spacing: 4px; }
-  .topbar { padding: 12px 14px; }
-  .main { padding: 18px 12px; }
-  .nav-tab { padding: 6px 10px; font-size: 12px; }
+  .code-otp  { font-size: 26px; letter-spacing: 4px; }
+  .topbar    { padding: 12px 14px; }
+  .main      { padding: 18px 12px; }
 }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════════ -->
-<!-- AUTH                                                    -->
-<!-- ══════════════════════════════════════════════════════ -->
-<div id="authPage" class="auth-wrap">
-  <div class="auth-box">
-    <div class="auth-logo">
-      <span class="icon">🔐</span>
-      <h1>TOTP Authenticator</h1>
-      <p id="authSubtitle">আপনার একাউন্টে লগিন করুন</p>
-    </div>
-    <div class="auth-tabs">
-      <div class="auth-tab active" onclick="switchAuthTab('login')">লগিন</div>
-      <div class="auth-tab" onclick="switchAuthTab('register')">রেজিস্ট্রেশন</div>
-      <div class="auth-tab" onclick="switchAuthTab('forgot')">পাসওয়ার্ড ভুলেছেন</div>
-    </div>
-
-    <!-- Login -->
-    <div id="loginForm">
+<!-- ══════════════════════════════════════════════════════════
+     LOGIN PAGE
+══════════════════════════════════════════════════════════ -->
+<div class="page active" id="loginPage">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <span class="icon">🔐</span>
+        <h1>TOTP Authenticator</h1>
+        <p>Sign in to your account</p>
+      </div>
       <div class="field"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"></div>
       <div class="field"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"></div>
-      <button class="btn" id="loginBtn" onclick="doLogin()">লগিন করুন</button>
+      <button class="btn" id="loginBtn" onclick="doLogin()">Sign In</button>
       <div class="err-msg" id="loginErr"></div>
-      <div style="text-align:center;margin-top:16px;">
-        <button class="link-btn" onclick="switchAuthTab('forgot')">পাসওয়ার্ড ভুলে গেছেন?</button>
-      </div>
-      <div style="text-align:center;margin-top:8px;font-size:13px;color:var(--muted);">
-        একাউন্ট নেই? <button class="link-btn" onclick="switchAuthTab('register')">রেজিস্ট্রেশন করুন</button>
-      </div>
-      <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--muted);">
-        <button class="link-btn" style="font-size:12px;" onclick="showAdminLogin()">Admin Login →</button>
-      </div>
-    </div>
-
-    <!-- Register -->
-    <div id="registerForm" style="display:none;">
-      <div id="regStep1">
-        <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
-        <button class="btn" id="regEmailBtn" onclick="sendRegOtp()">OTP পাঠান</button>
-        <div class="err-msg" id="regErr"></div>
-        <div class="ok-msg" id="regOk"></div>
-      </div>
-      <div id="regStep2" style="display:none;">
-        <div class="field"><label>Email OTP</label><input type="text" id="regOtp" placeholder="6 সংখ্যার কোড" maxlength="6" inputmode="numeric"></div>
-        <div class="field"><label>Password (কমপক্ষে ৮ অক্ষর)</label><input type="password" id="regPassword" placeholder="••••••••"></div>
-        <div class="field"><label>Password নিশ্চিত করুন</label><input type="password" id="regPassword2" placeholder="••••••••"></div>
-        <button class="btn" id="regSubmitBtn" onclick="doRegister()">একাউন্ট তৈরি করুন</button>
-        <div class="err-msg" id="regErr2"></div>
-        <div class="ok-msg" id="regOk2"></div>
-      </div>
-    </div>
-
-    <!-- Forgot Password -->
-    <div id="forgotForm" style="display:none;">
-      <div id="forgotStep1">
-        <div class="field"><label>Email</label><input type="email" id="forgotEmail" placeholder="you@example.com"></div>
-        <button class="btn" id="forgotEmailBtn" onclick="sendForgotOtp()">OTP পাঠান</button>
-        <div class="err-msg" id="forgotErr"></div>
-        <div class="ok-msg" id="forgotOk"></div>
-      </div>
-      <div id="forgotStep2" style="display:none;">
-        <div class="field"><label>Email OTP</label><input type="text" id="forgotOtp" placeholder="6 সংখ্যার কোড" maxlength="6" inputmode="numeric"></div>
-        <div class="field"><label>নতুন Password</label><input type="password" id="forgotNewPass" placeholder="••••••••"></div>
-        <button class="btn" id="forgotSubmitBtn" onclick="doResetPassword()">পাসওয়ার্ড পরিবর্তন করুন</button>
-        <div class="err-msg" id="forgotErr2"></div>
-        <div class="ok-msg" id="forgotOk2"></div>
+      <div class="auth-switch">
+        <a onclick="showPage('forgotPage')">Forgot password?</a>
+        &nbsp;·&nbsp;
+        <a onclick="showPage('registerPage')">Create account</a>
+        &nbsp;·&nbsp;
+        <a onclick="showPage('adminLoginPage')">Admin</a>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════ -->
-<!-- DASHBOARD                                               -->
-<!-- ══════════════════════════════════════════════════════ -->
-<div id="dashboard" class="dashboard">
+<!-- ══════════════════════════════════════════════════════════
+     REGISTER PAGE
+══════════════════════════════════════════════════════════ -->
+<div class="page" id="registerPage">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-logo"><span class="icon">📝</span><h1>Create Account</h1><p>Register with your email</p></div>
+      <div id="regStep1">
+        <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
+        <div class="field"><label>Password</label><input type="password" id="regPassword" placeholder="Min 8 characters"></div>
+        <div class="field"><label>Confirm Password</label><input type="password" id="regPassword2" placeholder="Repeat password"></div>
+        <button class="btn" id="regBtn" onclick="doRegister()">Send Verification Code</button>
+        <div class="err-msg" id="regErr"></div>
+      </div>
+      <div id="regStep2" style="display:none">
+        <p style="font-size:14px;color:var(--muted);margin-bottom:18px;">A 6-digit verification code was sent to your email. Enter it below.</p>
+        <div class="field"><label>Verification Code</label><input type="text" id="regCode" placeholder="000000" maxlength="6" style="letter-spacing:6px;font-size:20px;text-align:center;font-family:'JetBrains Mono',monospace"></div>
+        <button class="btn" id="regVerifyBtn" onclick="doVerifyEmail()">Verify & Create Account</button>
+        <div class="err-msg" id="regVerifyErr"></div>
+      </div>
+      <div class="auth-switch">Already have an account? <a onclick="showPage('loginPage')">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     FORGOT PASSWORD PAGE
+══════════════════════════════════════════════════════════ -->
+<div class="page" id="forgotPage">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-logo"><span class="icon">🔑</span><h1>Forgot Password</h1><p>Reset via email code</p></div>
+      <div id="forgotStep1">
+        <div class="field"><label>Email</label><input type="email" id="forgotEmail" placeholder="you@example.com"></div>
+        <button class="btn" id="forgotBtn" onclick="doForgotPassword()">Send Reset Code</button>
+        <div class="err-msg" id="forgotErr"></div>
+        <div class="ok-msg"  id="forgotOk"></div>
+      </div>
+      <div id="forgotStep2" style="display:none">
+        <p style="font-size:14px;color:var(--muted);margin-bottom:18px;">Enter the 6-character code sent to your email and your new password.</p>
+        <div class="field"><label>Reset Code</label><input type="text" id="forgotCode" placeholder="XXXXXX" maxlength="6" style="letter-spacing:4px;font-size:18px;text-align:center;font-family:'JetBrains Mono',monospace"></div>
+        <div class="field"><label>New Password</label><input type="password" id="forgotNewPw" placeholder="Min 8 characters"></div>
+        <button class="btn" id="forgotResetBtn" onclick="doResetPassword()">Reset Password</button>
+        <div class="err-msg" id="forgotResetErr"></div>
+        <div class="ok-msg"  id="forgotResetOk"></div>
+      </div>
+      <div class="auth-switch"><a onclick="showPage('loginPage')">← Back to Sign In</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     ADMIN LOGIN PAGE
+══════════════════════════════════════════════════════════ -->
+<div class="page" id="adminLoginPage">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-logo"><span class="icon">🛡️</span><h1>Admin Login</h1><p>Restricted access</p></div>
+      <div class="field"><label>Username</label><input type="text" id="adminUser" placeholder="admin"></div>
+      <div class="field"><label>Password</label><input type="password" id="adminPass" placeholder="••••••••"></div>
+      <button class="btn" id="adminLoginBtn" onclick="doAdminLogin()">Sign In as Admin</button>
+      <div class="err-msg" id="adminLoginErr"></div>
+      <div class="auth-switch"><a onclick="showPage('loginPage')">← Back</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     USER DASHBOARD
+══════════════════════════════════════════════════════════ -->
+<div class="page" id="dashboardPage">
   <div class="topbar">
     <div class="topbar-brand"><span>🔐</span> TOTP</div>
-    <div class="nav-tabs">
-      <button class="nav-tab active" onclick="switchPage('codes')">🔑 কোড</button>
-      <button class="nav-tab" onclick="switchPage('trash')">🗑️ ট্র্যাশ</button>
-      <button class="nav-tab" onclick="switchPage('settings')">⚙️ সেটিংস</button>
-    </div>
-    <div class="topbar-actions">
-      <button class="btn-outline" onclick="doLogout()">Logout</button>
+    <div class="topbar-right">
+      <button class="icon-btn" onclick="loadCodes()">🔄 Refresh</button>
+      <button class="icon-btn" onclick="showPage('profilePage')">👤 Profile</button>
+      <button class="icon-btn danger" onclick="doLogout()">Logout</button>
     </div>
   </div>
   <div class="main">
-
-    <!-- Codes Page -->
-    <div id="codesPage" class="page active">
-      <!-- Add Code Panel -->
-      <div class="panel" id="addPanel" style="display:none;">
-        <h3>➕ নতুন কোড যোগ করুন</h3>
-        <div class="field"><label>নাম (Label)</label><input type="text" id="addLabel" placeholder="Gmail, Facebook, GitHub..."></div>
-        <div class="field"><label>Base32 Secret Key</label><input type="text" id="addSecret" placeholder="JBSWY3DPEHPK3PXP"></div>
-        <div style="display:flex;gap:10px;">
-          <button class="btn" style="flex:1" onclick="doAddCode()">সেভ করুন</button>
-          <button class="btn-outline" onclick="toggleAddPanel()">বাতিল</button>
-        </div>
-        <div class="err-msg" id="addErr"></div>
-      </div>
-
+    <div class="tabs">
+      <button class="tab active" id="tabActive" onclick="switchTab('active')">🔑 Active Codes</button>
+      <button class="tab" id="tabDeleted" onclick="switchTab('deleted')">🗑️ Trash</button>
+    </div>
+    <div id="activeSection">
       <div class="section-header">
-        <div>
-          <div class="section-title">আপনার কোডসমূহ</div>
-          <div id="tgLinkedNote" style="display:none;font-size:12px;color:#a78bfa;margin-top:4px;">🔗 Telegram কানেক্টেড</div>
-        </div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn-outline" onclick="loadCodes()">🔄</button>
-          <button class="btn-outline" style="border-color:var(--accent);color:var(--accent);" onclick="toggleAddPanel()">➕ যোগ করুন</button>
-        </div>
+        <div class="section-title">Your Authenticator Codes</div>
+        <button class="icon-btn" onclick="openAddModal()" style="font-size:12px;">➕ Add Code</button>
       </div>
       <div class="code-grid" id="codeGrid">
-        <div class="loading"><div class="spinner"></div> লোড হচ্ছে...</div>
+        <div class="loading"><div class="spinner"></div>&nbsp;Loading...</div>
       </div>
     </div>
-
-    <!-- Trash Page -->
-    <div id="trashPage" class="page">
-      <div class="section-header">
-        <div class="section-title">ট্র্যাশ (৩০ দিনে স্থায়ীভাবে ডিলিট)</div>
-        <button class="btn-outline" onclick="loadTrash()">🔄</button>
-      </div>
-      <div id="trashList"><div class="loading"><div class="spinner"></div> লোড হচ্ছে...</div></div>
-    </div>
-
-    <!-- Settings Page -->
-    <div id="settingsPage" class="page">
-      <!-- Account -->
-      <div class="settings-section">
-        <h3>👤 একাউন্ট</h3>
-        <div class="settings-row">
-          <div><div class="settings-label">Email</div><div class="settings-sub" id="settingsEmail">—</div></div>
-        </div>
-        <div class="settings-row">
-          <div><div class="settings-label">পাসওয়ার্ড পরিবর্তন</div></div>
-          <button class="btn-outline" onclick="openChangePassModal()">পরিবর্তন করুন</button>
-        </div>
-        <div class="settings-row">
-          <div><div class="settings-label" style="color:var(--danger);">একাউন্ট ডিলিট করুন</div><div class="settings-sub">সকল ডেটা মুছে যাবে</div></div>
-          <button class="btn-sm btn-danger" onclick="openDeleteAccountModal()">ডিলিট করুন</button>
-        </div>
-      </div>
-
-      <!-- Telegram Link -->
-      <div class="settings-section">
-        <h3>🔗 Telegram কানেক্ট</h3>
-        <div id="tgLinkStatus">
-          <div class="settings-row">
-            <div><div class="settings-label">Telegram একাউন্ট</div><div class="settings-sub">কানেক্ট করলে ওয়েবসাইটে Telegram কোডও দেখা যাবে</div></div>
-            <div id="tgLinkBtn">
-              <button class="btn-outline" onclick="openLinkTgModal()">কানেক্ট করুন</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════ -->
-<!-- ADMIN                                                   -->
-<!-- ══════════════════════════════════════════════════════ -->
-<div id="adminLoginPage" style="display:none;" class="admin-login-wrap">
-  <div class="auth-box">
-    <div class="auth-logo">
-      <span class="icon">🛡️</span>
-      <h1>Admin Panel</h1>
-      <p>অ্যাডমিন লগিন</p>
-    </div>
-    <div class="field"><label>Username</label><input type="text" id="adminUser" autocomplete="off"></div>
-    <div class="field"><label>Password</label><input type="password" id="adminPass"></div>
-    <button class="btn" onclick="doAdminLogin()">লগিন</button>
-    <div class="err-msg" id="adminErr"></div>
-    <div style="text-align:center;margin-top:14px;">
-      <button class="link-btn" onclick="showUserAuth()">← ব্যবহারকারী লগিনে ফিরুন</button>
-    </div>
-  </div>
-</div>
-
-<div id="adminPanel" class="admin-panel">
-  <div class="admin-topbar">
-    <div class="topbar-brand"><span>🛡️</span> Admin Panel</div>
-    <button class="btn-outline" onclick="doAdminLogout()">Logout</button>
-  </div>
-  <div class="admin-main">
-    <div class="admin-nav-tabs">
-      <button class="nav-tab active" onclick="switchAdminTab('webUsers')">🌐 ওয়েব ইউজার</button>
-      <button class="nav-tab" onclick="switchAdminTab('tgUsers')">📱 Telegram ইউজার</button>
-      <button class="nav-tab" onclick="switchAdminTab('logs')">📋 লগ</button>
-    </div>
-    <div id="adminWebUsers" class="admin-page">
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Email</th><th>Verified</th><th>Telegram</th><th>Banned</th><th>তারিখ</th><th>অ্যাকশন</th></tr></thead>
-          <tbody id="webUsersBody"></tbody>
-        </table>
-      </div>
-    </div>
-    <div id="adminTgUsers" class="admin-page" style="display:none;">
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Chat ID</th><th>Username</th><th>নাম</th><th>Banned</th><th>তারিখ</th><th>অ্যাকশন</th></tr></thead>
-          <tbody id="tgUsersBody"></tbody>
-        </table>
-      </div>
-    </div>
-    <div id="adminLogs" class="admin-page" style="display:none;">
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>সময়</th><th>Chat ID</th><th>অ্যাকশন</th><th>ডিটেইল</th></tr></thead>
-          <tbody id="logsBody"></tbody>
-        </table>
+    <div id="deletedSection" style="display:none">
+      <div class="section-title">Trash – codes pending deletion (restore within 30 days)</div>
+      <div class="code-grid" id="deletedGrid">
+        <div class="loading"><div class="spinner"></div>&nbsp;Loading...</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════ -->
-<!-- MODALS                                                  -->
-<!-- ══════════════════════════════════════════════════════ -->
-<!-- Change Password Modal -->
-<div class="modal-bg" id="changePassModal">
+<!-- ══════════════════════════════════════════════════════════
+     PROFILE PAGE
+══════════════════════════════════════════════════════════ -->
+<div class="page" id="profilePage">
+  <div class="topbar">
+    <div class="topbar-brand"><span>👤</span> Profile</div>
+    <div class="topbar-right">
+      <button class="icon-btn" onclick="showPage('dashboardPage')">← Back</button>
+      <button class="icon-btn danger" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="profile-card">
+      <h3>Account Info</h3>
+      <div class="info-row"><span class="info-label">Email</span><span class="info-val" id="profileEmail">—</span></div>
+      <div class="info-row"><span class="info-label">Telegram</span><span class="info-val" id="profileTgStatus">—</span></div>
+    </div>
+
+    <div class="profile-card">
+      <h3>Change Password</h3>
+      <div class="field"><label>Current Password</label><input type="password" id="changePwCurrent" placeholder="••••••••"></div>
+      <div class="field"><label>New Password</label><input type="password" id="changePwNew" placeholder="Min 8 characters"></div>
+      <div class="field"><label>Confirm New Password</label><input type="password" id="changePwConfirm" placeholder="Repeat new password"></div>
+      <button class="btn" onclick="doChangePassword()" style="margin-top:4px;">Update Password</button>
+      <div class="err-msg" id="changePwErr"></div>
+      <div class="ok-msg"  id="changePwOk"></div>
+    </div>
+
+    <div class="profile-card" id="tgLinkCard">
+      <h3>Telegram Account</h3>
+      <div id="tgLinkStatus" style="margin-bottom:14px;font-size:14px;color:var(--muted);">Loading...</div>
+      <div id="tgConnectForm">
+        <div class="field"><label>Telegram Username</label><input type="text" id="tgUsername" placeholder="@username"></div>
+        <button class="btn" onclick="doLinkTelegramRequest()" style="margin-bottom:10px;">Connect Telegram</button>
+        <div id="tgOtpSection" style="display:none">
+          <div class="field"><label>OTP sent to Telegram</label><input type="text" id="tgOtp" placeholder="000000" maxlength="6" style="letter-spacing:6px;font-size:20px;text-align:center;font-family:'JetBrains Mono',monospace"></div>
+          <button class="btn" onclick="doLinkTelegramVerify()">Verify OTP</button>
+        </div>
+        <div class="err-msg" id="tgLinkErr"></div>
+        <div class="ok-msg"  id="tgLinkOk"></div>
+      </div>
+      <div id="tgDisconnectForm" style="display:none">
+        <button class="btn-danger" onclick="doUnlinkTelegram()">Disconnect Telegram Account</button>
+        <div class="err-msg" id="tgUnlinkErr"></div>
+      </div>
+    </div>
+
+    <div class="profile-card">
+      <h3>Danger Zone</h3>
+      <button class="btn-danger" onclick="openDeleteAccountModal()">Delete My Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     ADMIN DASHBOARD
+══════════════════════════════════════════════════════════ -->
+<div class="page" id="adminPage">
+  <div class="topbar">
+    <div class="topbar-brand"><span>🛡️</span> Admin</div>
+    <div class="topbar-right">
+      <button class="icon-btn" onclick="loadAdminUsers()">🔄 Refresh</button>
+      <button class="icon-btn danger" onclick="doAdminLogout()">Logout</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="section-title" style="margin-bottom:18px;">Registered Users</div>
+    <div id="adminUserTable">
+      <div class="loading"><div class="spinner"></div>&nbsp;Loading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════════════════════ -->
+
+<!-- Add Code Modal -->
+<div class="modal-overlay" id="addModal">
   <div class="modal">
-    <h3>🔒 পাসওয়ার্ড পরিবর্তন</h3>
-    <div class="field"><label>বর্তমান পাসওয়ার্ড</label><input type="password" id="cpCurrent" placeholder="••••••••"></div>
-    <div class="field"><label>নতুন পাসওয়ার্ড</label><input type="password" id="cpNew" placeholder="••••••••"></div>
-    <div class="field"><label>নিশ্চিত করুন</label><input type="password" id="cpNew2" placeholder="••••••••"></div>
-    <div style="display:flex;gap:10px;margin-top:8px;">
-      <button class="btn" style="flex:1" onclick="doChangePassword()">পরিবর্তন করুন</button>
-      <button class="btn-outline" onclick="closeModal('changePassModal')">বাতিল</button>
+    <h2>➕ Add New Code</h2>
+    <div class="field"><label>Label</label><input type="text" id="addLabel" placeholder="e.g. Gmail, GitHub"></div>
+    <div class="field"><label>Base32 Secret Key</label><input type="text" id="addSecret" placeholder="JBSWY3DPEHPK3PXP"></div>
+    <div class="err-msg" id="addErr"></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('addModal')">Cancel</button>
+      <button class="btn" onclick="doAddCode()">Save Code</button>
     </div>
-    <div class="err-msg" id="cpErr"></div>
-    <div class="ok-msg" id="cpOk"></div>
   </div>
 </div>
 
 <!-- Delete Account Modal -->
-<div class="modal-bg" id="deleteAccountModal">
+<div class="modal-overlay" id="deleteAccountModal">
   <div class="modal">
-    <h3 style="color:var(--danger);">⚠️ একাউন্ট ডিলিট</h3>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">এই কাজ ফিরিয়ে আনা যাবে না। সমস্ত কোড ও ডেটা মুছে যাবে।</p>
-    <div class="field"><label>পাসওয়ার্ড দিয়ে নিশ্চিত করুন</label><input type="password" id="delAccPass" placeholder="••••••••"></div>
-    <div style="display:flex;gap:10px;margin-top:8px;">
-      <button class="btn btn-danger" style="flex:1" onclick="doDeleteAccount()">ডিলিট করুন</button>
-      <button class="btn-outline" onclick="closeModal('deleteAccountModal')">বাতিল</button>
+    <h2>⚠️ Delete Account</h2>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">This action is permanent and cannot be undone. All your website codes will be deleted. Enter your password to confirm.</p>
+    <div class="field"><label>Password</label><input type="password" id="deleteAccountPw" placeholder="••••••••"></div>
+    <div class="err-msg" id="deleteAccountErr"></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('deleteAccountModal')">Cancel</button>
+      <button class="btn-danger" onclick="doDeleteAccount()" style="flex:1;">Delete Account</button>
     </div>
-    <div class="err-msg" id="delAccErr"></div>
   </div>
 </div>
 
-<!-- Link Telegram Modal -->
-<div class="modal-bg" id="linkTgModal">
+<!-- Admin Delete User Modal -->
+<div class="modal-overlay" id="adminDeleteModal">
   <div class="modal">
-    <h3>🔗 Telegram কানেক্ট</h3>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">তোমার Telegram username দাও। Bot-এ একটি OTP পাঠানো হবে।</p>
-    <div class="field"><label>Telegram Username (@ছাড়া)</label><input type="text" id="tgUsername" placeholder="username" autocomplete="off"></div>
-    <div style="display:flex;gap:10px;margin-top:8px;">
-      <button class="btn" style="flex:1" onclick="doLinkTelegram()">OTP পাঠান</button>
-      <button class="btn-outline" onclick="closeModal('linkTgModal')">বাতিল</button>
+    <h2>⚠️ Delete User Account</h2>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">This will permanently delete the website account for <b id="adminDeleteTarget"></b>. Their Telegram bot data will remain.</p>
+    <div class="err-msg" id="adminDeleteErr"></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('adminDeleteModal')">Cancel</button>
+      <button class="btn-danger" onclick="confirmAdminDelete()" style="flex:1;">Delete</button>
     </div>
-    <div class="err-msg" id="linkTgErr"></div>
-    <div class="ok-msg" id="linkTgOk"></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+// CONFIG  –  Replace with your Supabase Edge Function URL
 const API_BASE = "https://qhctfdhtqtttumsgyplv.supabase.co/functions/v1/quick-service";
-// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 
-// ── State ──────────────────────────────────────────────
-let sessionToken  = null;
-let sessionEmail  = null;
-let adminToken    = null;
-let codesData     = [];
-let tickInterval  = null;
-let linkedTelegram = false;
+// ─── STATE ───────────────────────────────────────────────
+let session = { token: null, chatId: null, email: null, isAdmin: false };
+let codesData    = [];
+let tickInterval = null;
+let tgLinkedChatId = null;  // chat_id returned from link-telegram-request
+let pendingRegToken = null; // pending_token from /api/register
+let pendingRegEmail = null;
+let pendingRegPw    = null;
+let adminDeleteChatId = null;
 
-// ── Init ───────────────────────────────────────────────
+// ─── INIT ────────────────────────────────────────────────
 window.onload = () => {
-  const saved = sessionStorage.getItem("totp_token");
-  const email = sessionStorage.getItem("totp_email");
-  if (saved) { sessionToken = saved; sessionEmail = email; showDashboard(); loadCodes(); loadSettings(); }
+  const saved = sessionStorage.getItem("totp_sess");
+  if (saved) {
+    try {
+      session = JSON.parse(saved);
+      if (session.isAdmin) { showPage("adminPage"); loadAdminUsers(); }
+      else { showPage("dashboardPage"); loadCodes(); }
+    } catch (_) { sessionStorage.removeItem("totp_sess"); }
+  }
 };
 
-// ── API Helper ─────────────────────────────────────────
+// ─── API HELPER ──────────────────────────────────────────
 async function api(endpoint, body = {}) {
-  const res = await fetch(`${API_BASE}/api/${endpoint}`, {
+  const res  = await fetch(`${API_BASE}/api/${endpoint}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   });
   const data = await res.json();
   return { ok: res.ok, status: res.status, data };
 }
 
-// ── Auth Tabs ──────────────────────────────────────────
-function switchAuthTab(tab) {
-  document.querySelectorAll(".auth-tab").forEach((el, i) => {
-    el.classList.toggle("active", ["login","register","forgot"][i] === tab);
-  });
-  document.getElementById("loginForm").style.display    = tab === "login"    ? "" : "none";
-  document.getElementById("registerForm").style.display = tab === "register" ? "" : "none";
-  document.getElementById("forgotForm").style.display   = tab === "forgot"   ? "" : "none";
-  document.getElementById("authSubtitle").textContent =
-    tab === "login" ? "আপনার একাউন্টে লগিন করুন" :
-    tab === "register" ? "নতুন একাউন্ট তৈরি করুন" : "পাসওয়ার্ড রিসেট করুন";
+// ─── PAGE ROUTING ────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 }
 
-// ── Login ──────────────────────────────────────────────
+// ─── LOGIN ───────────────────────────────────────────────
 async function doLogin() {
   const email = document.getElementById("loginEmail").value.trim();
-  const pass  = document.getElementById("loginPassword").value;
-  const btn   = document.getElementById("loginBtn");
+  const pw    = document.getElementById("loginPassword").value;
   const err   = document.getElementById("loginErr");
+  const btn   = document.getElementById("loginBtn");
   err.textContent = "";
-  if (!email || !pass) { err.textContent = "Email ও Password দিন।"; return; }
-  btn.disabled = true; btn.textContent = "লগিন হচ্ছে...";
+  if (!email || !pw) { err.textContent = "Please enter email and password."; return; }
+  btn.disabled = true; btn.textContent = "Signing in...";
   try {
-    const { ok, data } = await api("login", { email, password: pass });
-    if (!ok) { err.textContent = data.error === "Account banned" ? "🚫 আপনার একাউন্ট নিষিদ্ধ।" : "❌ " + (data.error || "ভুল Email বা Password।"); return; }
-    sessionToken = data.token; sessionEmail = data.email;
-    sessionStorage.setItem("totp_token", sessionToken);
-    sessionStorage.setItem("totp_email", sessionEmail);
-    showDashboard(); loadCodes(); loadSettings();
-  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
-  finally { btn.disabled = false; btn.textContent = "লগিন করুন"; }
+    const { ok, data } = await api("login", { email, password: pw });
+    if (!ok) { err.textContent = data.error === "Account banned" ? "🚫 Your account is banned." : "❌ " + (data.error || "Invalid credentials."); return; }
+    session = { token: data.token, chatId: data.chat_id, email, isAdmin: false };
+    sessionStorage.setItem("totp_sess", JSON.stringify(session));
+    showPage("dashboardPage");
+    loadCodes();
+  } catch (_) { err.textContent = "❌ Could not connect to server."; }
+  finally { btn.disabled = false; btn.textContent = "Sign In"; }
 }
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && document.getElementById("loginPage").classList.contains("active")) doLogin();
+});
 
-// ── Register ───────────────────────────────────────────
-async function sendRegOtp() {
-  const email = document.getElementById("regEmail").value.trim();
-  const btn = document.getElementById("regEmailBtn");
-  const err = document.getElementById("regErr"); const ok = document.getElementById("regOk");
-  err.textContent = ""; ok.textContent = "";
-  if (!email) { err.textContent = "Email দিন।"; return; }
-  btn.disabled = true; btn.textContent = "পাঠানো হচ্ছে...";
-  try {
-    const r = await api("register", { email });
-    if (!r.ok) { err.textContent = "❌ " + (r.data.error || "সমস্যা হয়েছে।"); return; }
-    ok.textContent = `✅ ${email} তে OTP পাঠানো হয়েছে।`;
-    document.getElementById("regStep2").style.display = "";
-  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
-  finally { btn.disabled = false; btn.textContent = "OTP পাঠান"; }
-}
-
-async function doRegister() {
-  const email = document.getElementById("regEmail").value.trim();
-  const code  = document.getElementById("regOtp").value.trim();
-  const pass  = document.getElementById("regPassword").value;
-  const pass2 = document.getElementById("regPassword2").value;
-  const btn = document.getElementById("regSubmitBtn");
-  const err = document.getElementById("regErr2"); const ok = document.getElementById("regOk2");
-  err.textContent = ""; ok.textContent = "";
-  if (pass !== pass2) { err.textContent = "❌ দুটো পাসওয়ার্ড মিলছে না।"; return; }
-  if (pass.length < 8) { err.textContent = "❌ পাসওয়ার্ড কমপক্ষে ৮ অক্ষর হতে হবে।"; return; }
-  btn.disabled = true; btn.textContent = "তৈরি হচ্ছে...";
-  try {
-    const r = await api("register", { email, code, password: pass });
-    if (!r.ok) { err.textContent = "❌ " + (r.data.error || "সমস্যা হয়েছে।"); return; }
-    ok.textContent = "✅ একাউন্ট তৈরি হয়েছে! লগিন করুন।";
-    setTimeout(() => switchAuthTab("login"), 1500);
-  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
-  finally { btn.disabled = false; btn.textContent = "একাউন্ট তৈরি করুন"; }
-}
-
-// ── Forgot Password ────────────────────────────────────
-async function sendForgotOtp() {
-  const email = document.getElementById("forgotEmail").value.trim();
-  const btn = document.getElementById("forgotEmailBtn");
-  const err = document.getElementById("forgotErr"); const ok = document.getElementById("forgotOk");
-  err.textContent = ""; ok.textContent = "";
-  if (!email) { err.textContent = "Email দিন।"; return; }
-  btn.disabled = true; btn.textContent = "পাঠানো হচ্ছে...";
-  try {
-    await api("forgot-password", { email });
-    ok.textContent = `✅ যদি এই email রেজিস্টার্ড থাকে, OTP পাঠানো হয়েছে।`;
-    document.getElementById("forgotStep2").style.display = "";
-  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
-  finally { btn.disabled = false; btn.textContent = "OTP পাঠান"; }
-}
-
-async function doResetPassword() {
-  const email   = document.getElementById("forgotEmail").value.trim();
-  const code    = document.getElementById("forgotOtp").value.trim();
-  const newPass = document.getElementById("forgotNewPass").value;
-  const btn = document.getElementById("forgotSubmitBtn");
-  const err = document.getElementById("forgotErr2"); const ok = document.getElementById("forgotOk2");
-  err.textContent = ""; ok.textContent = "";
-  if (newPass.length < 8) { err.textContent = "❌ পাসওয়ার্ড কমপক্ষে ৮ অক্ষর।"; return; }
-  btn.disabled = true; btn.textContent = "পরিবর্তন হচ্ছে...";
-  try {
-    const r = await api("forgot-password", { email, code, new_password: newPass });
-    if (!r.ok) { err.textContent = "❌ " + (r.data.error || "OTP ভুল বা মেয়াদ শেষ।"); return; }
-    ok.textContent = "✅ পাসওয়ার্ড পরিবর্তন হয়েছে!";
-    setTimeout(() => switchAuthTab("login"), 1500);
-  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
-  finally { btn.disabled = false; btn.textContent = "পাসওয়ার্ড পরিবর্তন করুন"; }
-}
-
-// ── Show / Hide Pages ──────────────────────────────────
-function showDashboard() {
-  document.getElementById("authPage").style.display = "none";
-  document.getElementById("adminLoginPage").style.display = "none";
-  document.getElementById("adminPanel").style.display = "none";
-  document.getElementById("dashboard").style.display = "block";
-}
-
-function showUserAuth() {
-  document.getElementById("adminLoginPage").style.display = "none";
-  document.getElementById("authPage").style.display = "";
-}
-
-function showAdminLogin() {
-  document.getElementById("authPage").style.display = "none";
-  document.getElementById("adminLoginPage").style.display = "";
-}
-
-function doLogout() {
-  if (sessionToken) api("logout", { token: sessionToken });
-  sessionToken = null; sessionEmail = null;
-  sessionStorage.removeItem("totp_token");
-  sessionStorage.removeItem("totp_email");
-  clearInterval(tickInterval);
-  document.getElementById("dashboard").style.display = "none";
-  document.getElementById("authPage").style.display = "";
+// ─── LOGOUT ──────────────────────────────────────────────
+async function doLogout() {
+  if (session.token) api("logout", { token: session.token }).catch(() => {});
+  sessionStorage.removeItem("totp_sess");
+  session = {}; clearInterval(tickInterval); codesData = [];
   document.getElementById("loginEmail").value = "";
   document.getElementById("loginPassword").value = "";
+  showPage("loginPage");
 }
 
-function switchPage(page) {
-  ["codes","trash","settings"].forEach(p => {
-    document.getElementById(p + "Page").classList.toggle("active", p === page);
-  });
-  document.querySelectorAll(".nav-tab").forEach((el, i) => {
-    el.classList.toggle("active", ["codes","trash","settings"][i] === page);
-  });
-  if (page === "trash") loadTrash();
-  if (page === "settings") loadSettings();
+// ─── REGISTER ────────────────────────────────────────────
+async function doRegister() {
+  const email = document.getElementById("regEmail").value.trim();
+  const pw    = document.getElementById("regPassword").value;
+  const pw2   = document.getElementById("regPassword2").value;
+  const err   = document.getElementById("regErr");
+  const btn   = document.getElementById("regBtn");
+  err.textContent = "";
+  if (!email || !pw) { err.textContent = "Please fill all fields."; return; }
+  if (pw.length < 8) { err.textContent = "Password must be at least 8 characters."; return; }
+  if (pw !== pw2)    { err.textContent = "Passwords do not match."; return; }
+  btn.disabled = true; btn.textContent = "Sending code...";
+  try {
+    const { ok, data } = await api("register", { email, password: pw });
+    if (!ok) { err.textContent = "❌ " + (data.error || "Registration failed."); return; }
+    pendingRegToken = data.pending_token;
+    pendingRegEmail = email;
+    pendingRegPw    = pw;
+    document.getElementById("regStep1").style.display = "none";
+    document.getElementById("regStep2").style.display = "block";
+  } catch (_) { err.textContent = "❌ Could not connect to server."; }
+  finally { btn.disabled = false; btn.textContent = "Send Verification Code"; }
+}
+async function doVerifyEmail() {
+  const code = document.getElementById("regCode").value.trim();
+  const err  = document.getElementById("regVerifyErr");
+  const btn  = document.getElementById("regVerifyBtn");
+  err.textContent = "";
+  if (!code) { err.textContent = "Enter the verification code."; return; }
+  btn.disabled = true; btn.textContent = "Verifying...";
+  try {
+    const { ok, data } = await api("verify-email", { email: pendingRegEmail, code, pending_token: pendingRegToken, password: pendingRegPw });
+    if (!ok) { err.textContent = "❌ " + (data.error || "Verification failed."); return; }
+    showToast("✅ Account created! Please sign in.");
+    showPage("loginPage");
+    document.getElementById("loginEmail").value = pendingRegEmail;
+    document.getElementById("regStep1").style.display = "block";
+    document.getElementById("regStep2").style.display = "none";
+    document.getElementById("regEmail").value = "";
+    document.getElementById("regPassword").value = "";
+    document.getElementById("regPassword2").value = "";
+    document.getElementById("regCode").value = "";
+  } catch (_) { err.textContent = "❌ Could not connect to server."; }
+  finally { btn.disabled = false; btn.textContent = "Verify & Create Account"; }
 }
 
-// ── Codes ──────────────────────────────────────────────
+// ─── FORGOT PASSWORD ─────────────────────────────────────
+async function doForgotPassword() {
+  const email = document.getElementById("forgotEmail").value.trim();
+  const err   = document.getElementById("forgotErr");
+  const ok_el = document.getElementById("forgotOk");
+  const btn   = document.getElementById("forgotBtn");
+  err.textContent = ""; ok_el.textContent = "";
+  if (!email) { err.textContent = "Enter your email."; return; }
+  btn.disabled = true; btn.textContent = "Sending...";
+  try {
+    await api("forgot-password", { email });
+    ok_el.textContent = "✅ If that email exists, a reset code was sent.";
+    document.getElementById("forgotStep1").style.display = "none";
+    document.getElementById("forgotStep2").style.display = "block";
+  } catch (_) { err.textContent = "❌ Could not connect to server."; }
+  finally { btn.disabled = false; btn.textContent = "Send Reset Code"; }
+}
+async function doResetPassword() {
+  const email  = document.getElementById("forgotEmail").value.trim();
+  const code   = document.getElementById("forgotCode").value.trim();
+  const newPw  = document.getElementById("forgotNewPw").value;
+  const err    = document.getElementById("forgotResetErr");
+  const ok_el  = document.getElementById("forgotResetOk");
+  const btn    = document.getElementById("forgotResetBtn");
+  err.textContent = ""; ok_el.textContent = "";
+  if (!code || !newPw) { err.textContent = "Fill all fields."; return; }
+  if (newPw.length < 8) { err.textContent = "Password must be at least 8 characters."; return; }
+  btn.disabled = true; btn.textContent = "Resetting...";
+  try {
+    const { ok, data } = await api("reset-password", { email, code, new_password: newPw });
+    if (!ok) { err.textContent = "❌ " + (data.error || "Reset failed."); return; }
+    ok_el.textContent = "✅ Password reset! You can now sign in.";
+    setTimeout(() => showPage("loginPage"), 1500);
+  } catch (_) { err.textContent = "❌ Could not connect to server."; }
+  finally { btn.disabled = false; btn.textContent = "Reset Password"; }
+}
+
+// ─── DASHBOARD TABS ──────────────────────────────────────
+function switchTab(tab) {
+  document.getElementById("tabActive").classList.toggle("active",  tab === "active");
+  document.getElementById("tabDeleted").classList.toggle("active", tab === "deleted");
+  document.getElementById("activeSection").style.display  = tab === "active"  ? "block" : "none";
+  document.getElementById("deletedSection").style.display = tab === "deleted" ? "block" : "none";
+  if (tab === "deleted") loadDeletedCodes();
+}
+
+// ─── LOAD CODES ──────────────────────────────────────────
 async function loadCodes() {
   const grid = document.getElementById("codeGrid");
-  grid.innerHTML = '<div class="loading"><div class="spinner"></div> লোড হচ্ছে...</div>';
+  grid.innerHTML = '<div class="loading"><div class="spinner"></div>&nbsp;Loading...</div>';
   clearInterval(tickInterval);
   try {
-    const { ok, status, data } = await api("codes", { token: sessionToken });
+    const { ok, status, data } = await api("codes", { token: session.token });
     if (status === 401) { doLogout(); return; }
-    if (!ok) { grid.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>লোড করতে সমস্যা।</p></div>'; return; }
+    if (status === 403) { grid.innerHTML = '<div class="empty-state"><div class="icon">🚫</div><p>Your account is banned.</p></div>'; return; }
     codesData = data.codes || [];
-    linkedTelegram = data.linked_telegram || false;
-    document.getElementById("tgLinkedNote").style.display = linkedTelegram ? "" : "none";
     renderCodes();
     startTicker();
   } catch (_) {
-    grid.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>সার্ভারে সংযোগ হচ্ছে না।</p></div>';
+    grid.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Failed to load codes.</p></div>';
   }
 }
 
 function renderCodes() {
   const grid = document.getElementById("codeGrid");
   if (!codesData.length) {
-    grid.innerHTML = '<div class="empty-state"><div class="icon">🔑</div><p>কোনো কোড নেই।<br>"➕ যোগ করুন" দিয়ে কোড সেভ করুন।</p></div>';
+    grid.innerHTML = '<div class="empty-state"><div class="icon">🔑</div><p>No codes yet.<br>Add a website code or connect your Telegram account.</p></div>';
     return;
   }
-  grid.innerHTML = codesData.map((c, i) => `
-    <div class="code-card${c.source === 'telegram' ? ' tg-card' : ''}">
-      <div class="code-card-top">
-        <div class="code-label">${escHtml(c.label)}</div>
-        <span class="code-badge${c.source === 'telegram' ? ' tg' : ''}">${c.source === 'telegram' ? '📱 Telegram' : '🌐 Web'}</span>
-      </div>
-      <div class="code-otp" id="otp_${i}" onclick="copyCode('${c.otp}', ${i})">${fmtOtp(c.otp)}</div>
-      <div class="code-meta">
-        <div class="timer-bar-wrap"><div class="timer-bar" id="bar_${i}"></div></div>
-        <div class="timer-txt" id="timer_${i}"></div>
-      </div>
-      ${c.source === 'web' ? `
-      <div class="code-actions">
-        <button class="btn-sm btn-danger" onclick="doDeleteCode('${c.id}')">🗑️ ডিলিট</button>
-      </div>` : ''}
-    </div>
-  `).join("");
+  grid.innerHTML = codesData.map((c, i) => {
+    const isWeb = c.source === "website";
+    const badge = isWeb ? '<span class="code-badge badge-web">Website</span>' : '<span class="code-badge badge-tg">Telegram</span>';
+    const actions = isWeb
+      ? `<div class="code-actions"><button class="code-btn red" onclick="doDeleteCode('${c.id}')">🗑️ Delete</button></div>`
+      : "";
+    return `
+      <div class="code-card ${isWeb ? "" : "tg-card"}">
+        <div class="code-card-header">
+          <div class="code-label">${escHtml(c.label)}</div>
+          ${badge}
+        </div>
+        <div class="code-otp" id="otp_${i}" onclick="copyCode('${c.otp}', ${i})">${fmtOtp(c.otp)}</div>
+        <div class="code-meta">
+          <div class="timer-bar-wrap"><div class="timer-bar" id="bar_${i}"></div></div>
+          <div class="timer-txt" id="tmr_${i}"></div>
+        </div>
+        ${actions}
+      </div>`;
+  }).join("");
   updateBars();
 }
 
@@ -710,15 +708,15 @@ function fmtOtp(otp) { return otp.slice(0, 3) + " " + otp.slice(3); }
 
 function updateBars() {
   const epoch = Math.floor(Date.now() / 1000);
-  const remaining = 30 - (epoch % 30);
-  const pct = (remaining / 30) * 100;
+  const rem   = 30 - (epoch % 30);
+  const pct   = (rem / 30) * 100;
   codesData.forEach((_, i) => {
     const bar = document.getElementById(`bar_${i}`);
-    const timerEl = document.getElementById(`timer_${i}`);
+    const tmr = document.getElementById(`tmr_${i}`);
     if (!bar) return;
     bar.style.width = pct + "%";
-    bar.className = "timer-bar" + (remaining <= 5 ? " crit" : remaining <= 10 ? " warn" : "");
-    if (timerEl) timerEl.textContent = remaining + "s";
+    bar.className   = "timer-bar" + (rem <= 5 ? " crit" : rem <= 10 ? " warn" : "");
+    if (tmr) tmr.textContent = rem + "s";
   });
 }
 
@@ -732,306 +730,261 @@ function startTicker() {
   }, 1000);
 }
 
-async function copyCode(otp, i) {
-  try { await navigator.clipboard.writeText(otp); } catch (_) {}
-  const el = document.getElementById(`otp_${i}`);
-  if (el) { el.classList.add("copied"); el.textContent = "✓ Copied!"; setTimeout(() => { el.classList.remove("copied"); el.textContent = fmtOtp(otp); }, 1500); }
-  showToast("✅ কোড কপি হয়েছে");
-}
-
-// ── Add Code ───────────────────────────────────────────
-function toggleAddPanel() {
-  const p = document.getElementById("addPanel");
-  p.style.display = p.style.display === "none" ? "" : "none";
-}
-
+// ─── ADD CODE ────────────────────────────────────────────
+function openAddModal() { openModal("addModal"); }
 async function doAddCode() {
   const label  = document.getElementById("addLabel").value.trim();
   const secret = document.getElementById("addSecret").value.trim();
   const err    = document.getElementById("addErr");
   err.textContent = "";
-  if (!label || !secret) { err.textContent = "সব ঘর পূরণ করুন।"; return; }
+  if (!label || !secret) { err.textContent = "Please fill all fields."; return; }
   try {
-    const { ok, data } = await api("codes/add", { token: sessionToken, label, secret });
-    if (!ok) { err.textContent = "❌ " + (data.error || "সেভ করতে সমস্যা।"); return; }
+    const { ok, data } = await api("add-code", { token: session.token, label, secret });
+    if (!ok) { err.textContent = "❌ " + (data.error || "Failed to save."); return; }
+    closeModal("addModal");
     document.getElementById("addLabel").value = "";
     document.getElementById("addSecret").value = "";
-    toggleAddPanel();
-    showToast("✅ কোড সেভ হয়েছে!");
+    showToast("✅ Code saved!");
     loadCodes();
-  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
+  } catch (_) { err.textContent = "❌ Could not connect to server."; }
 }
 
-// ── Delete Code ────────────────────────────────────────
+// ─── DELETE CODE (soft) ──────────────────────────────────
 async function doDeleteCode(id) {
-  if (!confirm("কোডটি ট্র্যাশে যাবে। ৩০ দিনের মধ্যে ফিরিয়ে আনা যাবে।")) return;
-  try {
-    const { ok } = await api("codes/delete", { token: sessionToken, id });
-    if (ok) { showToast("🗑️ ট্র্যাশে গেছে"); loadCodes(); }
-  } catch (_) { showToast("❌ সমস্যা হয়েছে"); }
+  if (!confirm("Move this code to Trash? You can restore it within 30 days.")) return;
+  const { ok, data } = await api("delete-code", { token: session.token, id });
+  if (ok) { showToast("🗑️ Moved to trash."); loadCodes(); }
+  else showToast("❌ " + (data.error || "Failed."));
 }
 
-// ── Trash ──────────────────────────────────────────────
-async function loadTrash() {
-  const list = document.getElementById("trashList");
-  list.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-  try {
-    const { data } = await api("codes/trash", { token: sessionToken });
-    const items = data.trash || [];
-    if (!items.length) { list.innerHTML = '<div class="empty-state"><div class="icon">🗑️</div><p>ট্র্যাশ খালি।</p></div>'; return; }
-    list.innerHTML = items.map(item => {
-      const permDate = new Date(item.permanent_delete_at);
-      const daysLeft = Math.ceil((permDate - Date.now()) / 86400000);
-      const soon = daysLeft <= 3;
-      return `<div class="trash-card">
-        <div class="trash-info">
-          <div class="trash-label">${escHtml(item.label)}</div>
-          <div class="trash-expires${soon ? ' soon' : ''}">${soon ? '⚠️' : '🕐'} ${daysLeft} দিনে স্থায়ীভাবে ডিলিট হবে</div>
+// ─── TRASH / DELETED CODES ───────────────────────────────
+async function loadDeletedCodes() {
+  const grid = document.getElementById("deletedGrid");
+  grid.innerHTML = '<div class="loading"><div class="spinner"></div>&nbsp;Loading...</div>';
+  const { ok, data } = await api("deleted-codes", { token: session.token });
+  if (!ok) { grid.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Failed to load.</p></div>'; return; }
+  const codes = data.deleted_codes || [];
+  if (!codes.length) { grid.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>Trash is empty.</p></div>'; return; }
+  grid.innerHTML = codes.map(c => {
+    const restoreDate = new Date(c.restore_before).toLocaleDateString();
+    return `
+      <div class="code-card del-card">
+        <div class="code-card-header">
+          <div class="code-label">${escHtml(c.label)}</div>
+          <span class="code-badge badge-del">Trash</span>
         </div>
-        <div class="trash-actions">
-          <button class="btn-sm btn-success" onclick="doRestoreCode('${item.id}')">↩️ ফিরিয়ে আনুন</button>
+        <div class="del-info">⏳ Will be permanently deleted on ${restoreDate}</div>
+        <div class="code-actions" style="margin-top:10px;">
+          <button class="code-btn" onclick="doRestoreCode('${c.id}')">♻️ Restore</button>
         </div>
       </div>`;
-    }).join("");
-  } catch (_) { list.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>লোড করতে সমস্যা।</p></div>'; }
+  }).join("");
 }
 
 async function doRestoreCode(id) {
-  try {
-    const { ok } = await api("codes/restore", { token: sessionToken, id });
-    if (ok) { showToast("✅ কোড ফিরিয়ে আনা হয়েছে"); loadTrash(); }
-  } catch (_) { showToast("❌ সমস্যা হয়েছে"); }
+  const { ok, data } = await api("restore-code", { token: session.token, id });
+  if (ok) { showToast("✅ Code restored!"); loadDeletedCodes(); }
+  else showToast("❌ " + (data.error || "Failed to restore."));
 }
 
-// ── Settings ───────────────────────────────────────────
-async function loadSettings() {
-  document.getElementById("settingsEmail").textContent = sessionEmail || "—";
-
-  // Load Telegram link status
-  try {
-    const { data } = await api("codes", { token: sessionToken });
-    const linked = data.linked_telegram;
-    const tgBtn  = document.getElementById("tgLinkBtn");
-    if (linked) {
-      tgBtn.innerHTML = `<span class="connected-badge">✅ কানেক্টেড</span>
-        <button class="btn-sm btn-danger" style="margin-left:8px;" onclick="doDisconnectTg()">ডিসকানেক্ট</button>`;
-    } else {
-      tgBtn.innerHTML = `<button class="btn-outline" onclick="openLinkTgModal()">কানেক্ট করুন</button>`;
-    }
-  } catch (_) {}
+// ─── PROFILE ─────────────────────────────────────────────
+function showProfilePage() {
+  document.getElementById("profileEmail").textContent = session.email || "—";
+  loadTgLinkStatus();
+  showPage("profilePage");
 }
 
-// ── Change Password ────────────────────────────────────
-function openChangePassModal() {
-  document.getElementById("cpCurrent").value = "";
-  document.getElementById("cpNew").value = "";
-  document.getElementById("cpNew2").value = "";
-  document.getElementById("cpErr").textContent = "";
-  document.getElementById("cpOk").textContent = "";
-  document.getElementById("changePassModal").classList.add("open");
+async function loadTgLinkStatus() {
+  const { ok, data } = await api("codes", { token: session.token });
+  const linked = ok && data.telegram_linked;
+  document.getElementById("profileTgStatus").innerHTML = linked
+    ? '<span class="linked-badge">🔗 Connected</span>'
+    : '<span class="unlinked-badge">✗ Not connected</span>';
+  document.getElementById("tgConnectForm").style.display    = linked ? "none" : "block";
+  document.getElementById("tgDisconnectForm").style.display = linked ? "block" : "none";
+  document.getElementById("tgLinkStatus").textContent = linked
+    ? "A Telegram account is connected. You can view Telegram codes on the dashboard."
+    : "Connect your Telegram account to also view its codes here.";
 }
 
+// Change Password (using forgot-password flow reuse would require email; simpler: use current password)
 async function doChangePassword() {
-  const current = document.getElementById("cpCurrent").value;
-  const newPass = document.getElementById("cpNew").value;
-  const newPass2 = document.getElementById("cpNew2").value;
-  const err = document.getElementById("cpErr"); const ok = document.getElementById("cpOk");
-  err.textContent = ""; ok.textContent = "";
-  if (newPass !== newPass2) { err.textContent = "❌ দুটো পাসওয়ার্ড মিলছে না।"; return; }
-  if (newPass.length < 8) { err.textContent = "❌ কমপক্ষে ৮ অক্ষর।"; return; }
-  try {
-    // Use forgot-password verify approach or a dedicated change-pass endpoint
-    // Here we re-login to verify current password then update
-    const verifyRes = await api("login", { email: sessionEmail, password: current });
-    if (!verifyRes.ok) { err.textContent = "❌ বর্তমান পাসওয়ার্ড ভুল।"; return; }
-    // Now send OTP to email for password change
-    const r = await api("forgot-password", { email: sessionEmail });
-    ok.textContent = "📧 Email এ OTP পাঠানো হয়েছে। OTP দিয়ে নতুন পাসওয়ার্ড সেট করুন।";
-    err.textContent = "";
-    // Store pending new pass and show OTP field
-    window._pendingNewPass = newPass;
-    document.getElementById("changePassModal").classList.remove("open");
-    showToast("📧 Email এ OTP পাঠানো হয়েছে। Forgot Password ট্যাব থেকে সম্পন্ন করুন।");
-  } catch (_) { err.textContent = "❌ সমস্যা হয়েছে।"; }
+  const cur  = document.getElementById("changePwCurrent").value;
+  const nw   = document.getElementById("changePwNew").value;
+  const cnf  = document.getElementById("changePwConfirm").value;
+  const err  = document.getElementById("changePwErr");
+  const ok_el = document.getElementById("changePwOk");
+  err.textContent = ""; ok_el.textContent = "";
+  if (!cur || !nw || !cnf) { err.textContent = "Fill all fields."; return; }
+  if (nw.length < 8)        { err.textContent = "New password must be at least 8 characters."; return; }
+  if (nw !== cnf)            { err.textContent = "New passwords do not match."; return; }
+  // Verify current password by trying to login
+  const { ok: loginOk } = await api("login", { email: session.email, password: cur });
+  if (!loginOk) { err.textContent = "❌ Current password is incorrect."; return; }
+  // Use reset-password endpoint (reusing token logic with email)
+  const reqRes = await api("forgot-password", { email: session.email });
+  // Note: server sends code to email — for in-session change, prompt user to check email
+  ok_el.textContent = "A reset code was sent to your email. Use the Forgot Password flow to complete the change.";
 }
 
-// ── Delete Account ─────────────────────────────────────
-function openDeleteAccountModal() {
-  document.getElementById("delAccPass").value = "";
-  document.getElementById("delAccErr").textContent = "";
-  document.getElementById("deleteAccountModal").classList.add("open");
-}
-
-async function doDeleteAccount() {
-  const pass = document.getElementById("delAccPass").value;
-  const err  = document.getElementById("delAccErr");
-  err.textContent = "";
-  if (!pass) { err.textContent = "পাসওয়ার্ড দিন।"; return; }
-  if (!confirm("সত্যিই একাউন্ট ডিলিট করতে চান? এটি ফিরিয়ে আনা যাবে না।")) return;
-  try {
-    const { ok, data } = await api("account-delete", { token: sessionToken, password: pass });
-    if (!ok) { err.textContent = "❌ " + (data.error || "পাসওয়ার্ড ভুল।"); return; }
-    showToast("✅ একাউন্ট ডিলিট হয়েছে।");
-    setTimeout(() => doLogout(), 1000);
-  } catch (_) { err.textContent = "❌ সমস্যা হয়েছে।"; }
-}
-
-// ── Telegram Link ──────────────────────────────────────
-function openLinkTgModal() {
-  document.getElementById("tgUsername").value = "";
-  document.getElementById("linkTgErr").textContent = "";
-  document.getElementById("linkTgOk").textContent = "";
-  document.getElementById("linkTgModal").classList.add("open");
-}
-
-async function doLinkTelegram() {
+// ─── TELEGRAM LINK ───────────────────────────────────────
+async function doLinkTelegramRequest() {
   const username = document.getElementById("tgUsername").value.trim();
-  const err = document.getElementById("linkTgErr"); const ok = document.getElementById("linkTgOk");
-  err.textContent = ""; ok.textContent = "";
-  if (!username) { err.textContent = "Username দিন।"; return; }
-  try {
-    const { ok: apiOk, data } = await api("link-telegram/link-request", { token: sessionToken, telegram_username: username });
-    if (!apiOk) { err.textContent = "❌ " + (data.error || "সমস্যা হয়েছে।"); return; }
-    ok.textContent = `✅ @${username} এর Telegram Bot এ OTP পাঠানো হয়েছে। Bot এ OTP দিন।`;
-  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
+  const err      = document.getElementById("tgLinkErr");
+  const ok_el    = document.getElementById("tgLinkOk");
+  err.textContent = ""; ok_el.textContent = "";
+  if (!username) { err.textContent = "Enter a Telegram username."; return; }
+  const { ok, data } = await api("link-telegram-request", { token: session.token, telegram_username: username });
+  if (!ok) { err.textContent = "❌ " + (data.error || "Failed."); return; }
+  tgLinkedChatId = data.chat_id;
+  ok_el.textContent = "✅ OTP sent to Telegram! Enter it below.";
+  document.getElementById("tgOtpSection").style.display = "block";
 }
 
-async function doDisconnectTg() {
-  if (!confirm("Telegram ডিসকানেক্ট করবেন? ওয়েবসাইট থেকে Telegram কোড দেখা যাবে না।")) return;
-  try {
-    const { ok } = await api("link-telegram/link-disconnect", { token: sessionToken });
-    if (ok) { showToast("🔗 Telegram ডিসকানেক্ট হয়েছে"); loadSettings(); loadCodes(); }
-  } catch (_) { showToast("❌ সমস্যা হয়েছে"); }
+async function doLinkTelegramVerify() {
+  const otp   = document.getElementById("tgOtp").value.trim();
+  const err   = document.getElementById("tgLinkErr");
+  const ok_el = document.getElementById("tgLinkOk");
+  err.textContent = ""; ok_el.textContent = "";
+  if (!otp) { err.textContent = "Enter the OTP."; return; }
+  const { ok, data } = await api("link-telegram-verify", { token: session.token, otp, chat_id: tgLinkedChatId });
+  if (!ok) { err.textContent = "❌ " + (data.error || "Failed."); return; }
+  ok_el.textContent = "✅ Telegram account connected successfully!";
+  document.getElementById("tgOtpSection").style.display = "none";
+  document.getElementById("tgUsername").value = "";
+  document.getElementById("tgOtp").value = "";
+  showToast("🔗 Telegram connected!");
+  loadTgLinkStatus();
 }
 
-// ── Modals ─────────────────────────────────────────────
+async function doUnlinkTelegram() {
+  if (!confirm("Disconnect your Telegram account?")) return;
+  const { ok, data } = await api("unlink-telegram", { token: session.token });
+  if (ok) { showToast("🔓 Telegram disconnected."); loadTgLinkStatus(); }
+  else document.getElementById("tgUnlinkErr").textContent = "❌ " + (data.error || "Failed.");
+}
+
+// ─── DELETE ACCOUNT ──────────────────────────────────────
+function openDeleteAccountModal() { openModal("deleteAccountModal"); }
+async function doDeleteAccount() {
+  const pw  = document.getElementById("deleteAccountPw").value;
+  const err = document.getElementById("deleteAccountErr");
+  err.textContent = "";
+  if (!pw) { err.textContent = "Enter your password."; return; }
+  const { ok, data } = await api("delete-account", { token: session.token, password: pw });
+  if (!ok) { err.textContent = "❌ " + (data.error || "Failed."); return; }
+  closeModal("deleteAccountModal");
+  showToast("Account deleted.");
+  setTimeout(doLogout, 1000);
+}
+
+// ─── ADMIN LOGIN ─────────────────────────────────────────
+async function doAdminLogin() {
+  const username = document.getElementById("adminUser").value.trim();
+  const password = document.getElementById("adminPass").value;
+  const err      = document.getElementById("adminLoginErr");
+  const btn      = document.getElementById("adminLoginBtn");
+  err.textContent = "";
+  btn.disabled = true; btn.textContent = "Signing in...";
+  try {
+    const { ok, data } = await api("admin-login", { username, password });
+    if (!ok) { err.textContent = "❌ " + (data.error || "Invalid credentials."); return; }
+    session = { token: data.token, isAdmin: true };
+    sessionStorage.setItem("totp_sess", JSON.stringify(session));
+    showPage("adminPage");
+    loadAdminUsers();
+  } catch (_) { err.textContent = "❌ Connection error."; }
+  finally { btn.disabled = false; btn.textContent = "Sign In as Admin"; }
+}
+function doAdminLogout() {
+  sessionStorage.removeItem("totp_sess");
+  session = {};
+  showPage("adminLoginPage");
+}
+
+// ─── ADMIN USERS ─────────────────────────────────────────
+async function loadAdminUsers() {
+  const container = document.getElementById("adminUserTable");
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>&nbsp;Loading...</div>';
+  const { ok, data } = await api("admin-users", { token: session.token });
+  if (!ok) { container.innerHTML = '<p style="color:var(--danger);padding:20px;">Failed to load users.</p>'; return; }
+  const users = data.users || [];
+  if (!users.length) { container.innerHTML = '<p style="color:var(--muted);padding:20px;">No users found.</p>'; return; }
+  container.innerHTML = `
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr>
+          <th>Telegram</th><th>Email</th><th>Status</th><th>Joined</th><th>Actions</th>
+        </tr></thead>
+        <tbody>
+          ${users.map(u => `
+            <tr>
+              <td>
+                <div style="font-weight:600;">@${escHtml(u.username || "—")}</div>
+                <div style="font-size:11px;color:var(--muted);">ID: ${u.chat_id}</div>
+              </td>
+              <td>${escHtml(u.email || "—")}</td>
+              <td><span class="status-badge ${u.is_banned ? "status-banned" : "status-active"}">${u.is_banned ? "Banned" : "Active"}</span></td>
+              <td style="font-size:12px;color:var(--muted);">${new Date(u.created_at).toLocaleDateString()}</td>
+              <td>
+                <div style="display:flex;gap:6px;">
+                  <button class="icon-btn" style="font-size:11px;" onclick="adminToggleBan(${u.chat_id}, ${!u.is_banned})">${u.is_banned ? "Unban" : "Ban"}</button>
+                  ${u.email ? `<button class="icon-btn" style="font-size:11px;border-color:var(--danger);color:var(--danger);" onclick="openAdminDelete(${u.chat_id}, '${escHtml(u.email || "")}')">Delete</button>` : ""}
+                </div>
+              </td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+async function adminToggleBan(chatId, ban) {
+  const reason = ban ? prompt("Ban reason (optional):") || null : null;
+  const { ok } = await api("admin-ban", { token: session.token, chat_id: chatId, ban, reason });
+  if (ok) { showToast(ban ? "🚫 User banned." : "✅ User unbanned."); loadAdminUsers(); }
+  else showToast("❌ Failed.");
+}
+
+function openAdminDelete(chatId, email) {
+  adminDeleteChatId = chatId;
+  document.getElementById("adminDeleteTarget").textContent = email;
+  document.getElementById("adminDeleteErr").textContent = "";
+  openModal("adminDeleteModal");
+}
+async function confirmAdminDelete() {
+  const { ok, data } = await api("admin-delete-account", { token: session.token, chat_id: adminDeleteChatId });
+  if (!ok) { document.getElementById("adminDeleteErr").textContent = "❌ " + (data.error || "Failed."); return; }
+  closeModal("adminDeleteModal");
+  showToast("🗑️ Account deleted.");
+  loadAdminUsers();
+}
+
+// ─── MODAL HELPERS ───────────────────────────────────────
+function openModal(id)  { document.getElementById(id).classList.add("open"); }
 function closeModal(id) { document.getElementById(id).classList.remove("open"); }
-document.querySelectorAll(".modal-bg").forEach(bg => {
-  bg.addEventListener("click", e => { if (e.target === bg) bg.classList.remove("open"); });
+document.querySelectorAll(".modal-overlay").forEach(el => {
+  el.addEventListener("click", e => { if (e.target === el) closeModal(el.id); });
 });
 
-// ── Admin ──────────────────────────────────────────────
-async function doAdminLogin() {
-  const u = document.getElementById("adminUser").value;
-  const p = document.getElementById("adminPass").value;
-  const err = document.getElementById("adminErr");
-  err.textContent = "";
-  try {
-    const { ok, data } = await api("admin/admin-login", { username: u, password: p });
-    if (!ok) { err.textContent = "❌ ভুল credentials।"; return; }
-    adminToken = data.token;
-    document.getElementById("adminLoginPage").style.display = "none";
-    document.getElementById("adminPanel").style.display = "block";
-    loadAdminWebUsers();
-  } catch (_) { err.textContent = "❌ সার্ভারে সংযোগ হচ্ছে না।"; }
+// ─── COPY ────────────────────────────────────────────────
+async function copyCode(otp, i) {
+  try { await navigator.clipboard.writeText(otp); } catch (_) {}
+  const el = document.getElementById(`otp_${i}`);
+  if (el) { el.classList.add("copied"); el.textContent = "✓ Copied!"; setTimeout(() => { el.classList.remove("copied"); el.textContent = fmtOtp(otp); }, 1500); }
+  showToast("✅ Code copied!");
 }
 
-function doAdminLogout() {
-  adminToken = null;
-  document.getElementById("adminPanel").style.display = "none";
-  document.getElementById("authPage").style.display = "";
-}
-
-function switchAdminTab(tab) {
-  ["webUsers","tgUsers","logs"].forEach(t => {
-    document.getElementById("admin" + t.charAt(0).toUpperCase() + t.slice(1)).style.display = t === tab ? "" : "none";
-  });
-  document.querySelectorAll(".admin-nav-tabs .nav-tab").forEach((el, i) => {
-    el.classList.toggle("active", ["webUsers","tgUsers","logs"][i] === tab);
-  });
-  if (tab === "webUsers") loadAdminWebUsers();
-  if (tab === "tgUsers")  loadAdminTgUsers();
-  if (tab === "logs")     loadAdminLogs();
-}
-
-async function loadAdminWebUsers() {
-  const tbody = document.getElementById("webUsersBody");
-  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);">লোড হচ্ছে...</td></tr>';
-  const { data } = await api("admin/admin-users", { token: adminToken });
-  const users = data.users || [];
-  if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);">কোনো ইউজার নেই।</td></tr>'; return; }
-  tbody.innerHTML = users.map(u => `
-    <tr>
-      <td>${escHtml(u.email)}</td>
-      <td><span class="badge ${u.email_verified ? 'badge-green' : 'badge-gray'}">${u.email_verified ? 'Yes' : 'No'}</span></td>
-      <td>${u.linked_chat_id ? `<span class="badge badge-green">✓ ${u.linked_chat_id}</span>` : '<span class="badge badge-gray">—</span>'}</td>
-      <td><span class="badge ${u.is_banned ? 'badge-red' : 'badge-green'}">${u.is_banned ? 'Banned' : 'Active'}</span></td>
-      <td style="color:var(--muted);font-size:12px;">${new Date(u.created_at).toLocaleDateString('bn-BD')}</td>
-      <td>
-        <button class="btn-sm ${u.is_banned ? 'btn-success' : 'btn-danger'}" onclick="adminBanUser('${u.id}','web',${!u.is_banned})" style="margin-right:4px;">${u.is_banned ? 'Unban' : 'Ban'}</button>
-        <button class="btn-sm btn-danger" onclick="adminDeleteUser('${u.id}')">Delete</button>
-      </td>
-    </tr>
-  `).join("");
-}
-
-async function loadAdminTgUsers() {
-  const tbody = document.getElementById("tgUsersBody");
-  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);">লোড হচ্ছে...</td></tr>';
-  const { data } = await api("admin/admin-tg-users", { token: adminToken });
-  const users = data.users || [];
-  tbody.innerHTML = users.map(u => `
-    <tr>
-      <td style="font-family:monospace;">${u.chat_id}</td>
-      <td>${u.username ? '@' + escHtml(u.username) : '—'}</td>
-      <td>${escHtml((u.first_name || '') + ' ' + (u.last_name || ''))}</td>
-      <td><span class="badge ${u.is_banned ? 'badge-red' : 'badge-green'}">${u.is_banned ? 'Banned' : 'Active'}</span></td>
-      <td style="color:var(--muted);font-size:12px;">${new Date(u.created_at).toLocaleDateString('bn-BD')}</td>
-      <td>
-        <button class="btn-sm ${u.is_banned ? 'btn-success' : 'btn-danger'}" onclick="adminBanUser(${u.chat_id},'telegram',${!u.is_banned})">${u.is_banned ? 'Unban' : 'Ban'}</button>
-      </td>
-    </tr>
-  `).join("");
-}
-
-async function loadAdminLogs() {
-  const tbody = document.getElementById("logsBody");
-  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);">লোড হচ্ছে...</td></tr>';
-  const { data } = await api("admin/admin-logs", { token: adminToken });
-  const logs = data.logs || [];
-  tbody.innerHTML = logs.slice(0,100).map(l => `
-    <tr>
-      <td style="font-size:11px;color:var(--muted);">${new Date(l.created_at).toLocaleString('bn-BD')}</td>
-      <td style="font-size:12px;font-family:monospace;">${l.chat_id || '—'}</td>
-      <td><span class="badge badge-gray">${escHtml(l.action)}</span></td>
-      <td style="font-size:12px;color:var(--muted);">${escHtml(l.detail || '—')}</td>
-    </tr>
-  `).join("");
-}
-
-async function adminBanUser(id, type, ban) {
-  const reason = ban ? (prompt("Ban কারণ (ঐচ্ছিক):") || "") : "";
-  const { ok } = await api("admin/admin-ban", { token: adminToken, id, type, ban, reason });
-  if (ok) { showToast(ban ? "🚫 Ban করা হয়েছে" : "✅ Unban করা হয়েছে"); type === "web" ? loadAdminWebUsers() : loadAdminTgUsers(); }
-}
-
-async function adminDeleteUser(id) {
-  if (!confirm("এই ওয়েব একাউন্ট ডিলিট করবেন?")) return;
-  const { ok } = await api("admin/admin-delete-user", { token: adminToken, id });
-  if (ok) { showToast("✅ ডিলিট হয়েছে"); loadAdminWebUsers(); }
-}
-
-// ── Helpers ────────────────────────────────────────────
+// ─── TOAST ───────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg; t.classList.add("show");
   setTimeout(() => t.classList.remove("show"), 2200);
 }
+
+// ─── UTIL ────────────────────────────────────────────────
 function escHtml(str) {
-  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
-document.addEventListener("keydown", e => {
-  if (e.key === "Enter") {
-    const authPage = document.getElementById("authPage");
-    if (authPage.style.display !== "none" || !authPage.classList.contains("hidden")) {
-      const loginForm = document.getElementById("loginForm");
-      if (loginForm.style.display !== "none") doLogin();
-    }
-  }
-  if (e.key === "Escape") {
-    document.querySelectorAll(".modal-bg.open").forEach(m => m.classList.remove("open"));
-  }
-});
 </script>
 </body>
 </html>
